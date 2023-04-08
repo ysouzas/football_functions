@@ -8,7 +8,7 @@ using football_functions.Services.Interfaces;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Options;
 
-namespace football_functions;
+namespace football_functions.Services;
 
 public class PlayerTableStorage : IPlayerTableStorage
 {
