@@ -33,7 +33,7 @@ namespace football_functions.Services
                 if (differenceBetweenTeam2And0 < bet)
                 {
                     bet = differenceBetweenTeam2And0;
-                    teams = randomTeams.Select(asa => new TeamDTO(asa.Sum(p => p.Score), asa.ToList())).OrderBy(t => t.Score).ToArray();
+                    teams = randomTeams.Select(asa => new TeamDTO(asa.Sum(p => p.Score), asa.OrderByDescending(a => a.Score).ToList())).OrderBy(t => t.Score).ToArray();
                 }
 
                 if (bet == acceptableDifference || bet == 0.00M)
