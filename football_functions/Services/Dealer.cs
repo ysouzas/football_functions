@@ -14,10 +14,10 @@ namespace football_functions.Services
             var numberOfPossibilities = 1000000;
             TeamDTO[] teams = Array.Empty<TeamDTO>();
 
-            double bet = 0.10;
+            decimal bet = 0.10M;
             var totalScore = players.Sum(p => p.Score);
 
-            var acceptableDifference = (totalScore % 3) == 0 ? 0.0 : 0.01;
+            var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
 
             for (int i = 0; i < numberOfPossibilities; i++)
             {
@@ -36,7 +36,7 @@ namespace football_functions.Services
                     teams = randomTeams.Select(asa => new TeamDTO(asa.Sum(p => p.Score), asa.ToList())).OrderBy(t => t.Score).ToArray();
                 }
 
-                if (bet == acceptableDifference || bet == 0.00)
+                if (bet == acceptableDifference || bet == 0.00M)
                 {
                     return teams;
                 }
