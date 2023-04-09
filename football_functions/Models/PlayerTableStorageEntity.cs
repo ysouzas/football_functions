@@ -25,7 +25,7 @@ public class PlayerTableStorageEntity : TableEntity
 
     public PlayerDTO ToDTO()
     {
-        return new PlayerDTO(Name, RowKey, Score);
+        return new PlayerDTO(Name, RowKey, ((decimal)Score));
     }
 }
 

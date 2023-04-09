@@ -32,7 +32,7 @@ namespace football_functions
         {
 
             var playersEntity = _playerTableStorage.GetAll();
-            var playersDTO = playersEntity.Select(p => p.ToDTO()).ToList();
+            var playersDTO = playersEntity.Select(p => p.ToDTO()).OrderByDescending(p => p.Score).ToList();
 
             if (req.Method == HttpMethod.Post.ToString())
             {
