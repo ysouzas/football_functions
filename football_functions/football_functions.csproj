@@ -43,8 +43,6 @@
     <Folder Include="Services\" />
     <Folder Include="Services\Interfaces\" />
     <Folder Include="Services\Interfaces\Base\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="appsettings.json">
