@@ -27,7 +27,7 @@ namespace football_functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            var playersEntity = _playerTableStorage.GetAll();
+            var playersEntity = await _playerTableStorage.GetAll();
             var playersDTO = playersEntity.Select(p => p.ToDTO()).OrderByDescending(p => p.Score).ToList();
 
             var ids = JsonSerializer.Deserialize<List<string>>(req.Body);

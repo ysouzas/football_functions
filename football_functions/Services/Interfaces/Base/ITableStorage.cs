@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using football_functions.Models;
 using Microsoft.Azure.Cosmos.Table;
 
 namespace football_functions.Services.Interfaces;
 
 public interface ITableStorage<T>
 {
-    IEnumerable<T> GetAll();
+    Task<IEnumerable<PlayerTableStorageEntity>> GetAll();
 
     Task<TableResult> InsertOrMerge(T entity);
 }

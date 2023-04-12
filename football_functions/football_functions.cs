@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using football_functions.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +21,15 @@ namespace football_functions
         }
 
         [FunctionName("football_functions")]
-        public IActionResult Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
-            var playersEntity = _playerTableStorage.GetAll();
+            var playersEntity = await _playerTableStorage.GetAll();
             var playersDTO = playersEntity.Select(p => p.ToDTO()).OrderByDescending(p => p.Score).ToList();
+
+
+
 
             return new OkObjectResult(playersDTO);
         }

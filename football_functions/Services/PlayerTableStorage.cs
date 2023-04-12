@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using football_functions.DTOs;
+using football_functions.Extensions;
 using football_functions.Models;
 using football_functions.Options;
 using football_functions.Services.Interfaces;
@@ -32,9 +33,9 @@ public class PlayerTableStorage : IPlayerTableStorage
                                 .Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, dto.Id));
 
         var playerEntity = _table.ExecuteQuery(rangeQuery).FirstOrDefault();
-        var playerDTO = playerEntity.ToDTO();
 
-        var ranks = playerDTO.Ranks.Append(dto.rank).ToArray();
+        var ranks = JsonSerializer.Deserialize<RankDTO[]>(playerEntity.Ranks);
+        ranks = ranks.Append(dto.rank).ToArray();
 
         playerEntity.Ranks = JsonSerializer.Serialize(ranks);
 
@@ -43,13 +44,21 @@ public class PlayerTableStorage : IPlayerTableStorage
         return tableResult;
     }
 
-    public IEnumerable<PlayerTableStorageEntity> GetAll()
+    public async Task<IEnumerable<PlayerTableStorageEntity>> GetAll()
     {
         TableQuery<PlayerTableStorageEntity> query = new TableQuery<PlayerTableStorageEntity>();
 
-        var tableResult = _table.ExecuteQuery(query);
+        var playersEntity = _table.ExecuteQuery(query);
 
-        return tableResult;
+        foreach (var playerEntity in playersEntity)
+        {
+            var ranks = JsonSerializer.Deserialize<RankDTO[]>(playerEntity.Ranks);
+            var score = ranks.GenerateScore();
+            playerEntity.Score = (double)score;
+
+            await InsertOrMerge(playerEntity);
+        }
+        return playersEntity;
     }
 
     public async Task<TableResult> InsertOrMerge(PlayerTableStorageEntity entity)
