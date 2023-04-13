@@ -35,6 +35,7 @@ public class PlayerTableStorage : IPlayerTableStorage
         var playerEntity = _table.ExecuteQuery(rangeQuery).FirstOrDefault();
 
         var ranks = JsonSerializer.Deserialize<RankDTO[]>(playerEntity.Ranks);
+
         ranks = ranks.Append(dto.rank).ToArray();
 
         playerEntity.Ranks = JsonSerializer.Serialize(ranks);
@@ -50,14 +51,6 @@ public class PlayerTableStorage : IPlayerTableStorage
 
         var playersEntity = _table.ExecuteQuery(query);
 
-        foreach (var playerEntity in playersEntity)
-        {
-            var ranks = JsonSerializer.Deserialize<RankDTO[]>(playerEntity.Ranks);
-            var score = ranks.GenerateScore();
-            playerEntity.Score = (double)score;
-
-            await InsertOrMerge(playerEntity);
-        }
         return playersEntity;
     }
 
@@ -68,6 +61,17 @@ public class PlayerTableStorage : IPlayerTableStorage
         var tableResult = await _table.ExecuteAsync(insertOrMergeOperation);
 
         return tableResult;
+    }
+
+    public async Task<TableResult> UpdateScore(PlayerTableStorageEntity entity)
+    {
+        var ranks = JsonSerializer.Deserialize<RankDTO[]>(entity.Ranks);
+        var score = ranks.GenerateScore();
+        entity.Score = (double)score;
+
+        var result = await InsertOrMerge(entity);
+
+        return result;
     }
 }
 

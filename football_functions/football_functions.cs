@@ -12,12 +12,10 @@ namespace football_functions
     public class football_functions
     {
         private readonly IPlayerTableStorage _playerTableStorage;
-        private readonly IDealer _dealer;
 
-        public football_functions(IPlayerTableStorage playerTableStorage, IDealer dealer)
+        public football_functions(IPlayerTableStorage playerTableStorage)
         {
             _playerTableStorage = playerTableStorage;
-            _dealer = dealer;
         }
 
         [FunctionName("football_functions")]
@@ -27,9 +25,6 @@ namespace football_functions
         {
             var playersEntity = await _playerTableStorage.GetAll();
             var playersDTO = playersEntity.Select(p => p.ToDTO()).OrderByDescending(p => p.Score).ToList();
-
-
-
 
             return new OkObjectResult(playersDTO);
         }
