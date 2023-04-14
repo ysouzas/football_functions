@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using football_functions.DTOs;
+using football_functions.DTOs.Request;
 using football_functions.Models;
 using Microsoft.Azure.Cosmos.Table;
 

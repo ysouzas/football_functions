@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using football_functions.DTOs;
+using football_functions.DTOs.Response;
 
 namespace football_functions.Extensions;
 
@@ -16,7 +16,7 @@ public static class RankExtensions
         if (rank.Length == 0)
             return 0;
 
-        var dateTime = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+        var dateTime = new DateOnly(DateTime.Now.Year, DateTime.Now.Month,17);
 
         var twoMonthsAgoDate = dateTime.AddMonths(-2);
 

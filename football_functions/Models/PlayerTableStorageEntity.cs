@@ -1,4 +1,6 @@
-﻿using football_functions.DTOs;
+﻿using System.Text.Json;
+using football_functions.DTOs;
+using football_functions.DTOs.Response;
 using Microsoft.Azure.Cosmos.Table;
 
 namespace football_functions.Models;
@@ -23,9 +25,16 @@ public class PlayerTableStorageEntity : TableEntity
     public string Name { get; set; } = string.Empty;
     public string Ranks { get; set; } = string.Empty;
 
-    public PlayerDTO ToDTO()
+    public PlayerDTO ToPlayerDTO()
     {
         return new PlayerDTO(Name, RowKey, ((decimal)Score));
+    }
+
+    public PlayerWithRanksDTO ToPlayerWithRanksDTO()
+    {
+        var ranks = JsonSerializer.Deserialize<RankDTO[]>(Ranks);
+
+        return new PlayerWithRanksDTO(Name, RowKey, (decimal)Score, ranks);
     }
 }
 

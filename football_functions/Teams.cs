@@ -28,7 +28,7 @@ namespace football_functions
             ILogger log)
         {
             var playersEntity = await _playerTableStorage.GetAll();
-            var playersDTO = playersEntity.Select(p => p.ToDTO()).OrderByDescending(p => p.Score).ToList();
+            var playersDTO = playersEntity.Select(p => p.ToPlayerDTO()).OrderByDescending(p => p.Score).ToList();
 
             var ids = JsonSerializer.Deserialize<List<string>>(req.Body);
             playersDTO = playersDTO.Where(p => ids.Contains(p.Id)).ToList();

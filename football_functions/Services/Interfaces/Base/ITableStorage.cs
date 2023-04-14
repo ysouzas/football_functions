@@ -8,6 +8,7 @@ namespace football_functions.Services.Interfaces;
 public interface ITableStorage<T>
 {
     Task<IEnumerable<PlayerTableStorageEntity>> GetAll();
+    PlayerTableStorageEntity GetById(string id);
 
     Task<TableResult> InsertOrMerge(T entity);
 }

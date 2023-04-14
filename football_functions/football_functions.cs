@@ -24,7 +24,7 @@ namespace football_functions
             ILogger log)
         {
             var playersEntity = await _playerTableStorage.GetAll();
-            var playersDTO = playersEntity.Select(p => p.ToDTO()).OrderByDescending(p => p.Score).ToList();
+            var playersDTO = playersEntity.Select(p => p.ToPlayerDTO()).OrderByDescending(p => p.Score).ToList();
 
             return new OkObjectResult(playersDTO);
         }
