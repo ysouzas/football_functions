@@ -76,6 +76,7 @@ public class PlayerTableStorage : IPlayerTableStorage
         var ranks = JsonSerializer.Deserialize<RankDTO[]>(entity.Ranks);
         var score = ranks.GenerateScore();
         entity.Score = (double)score;
+        entity.LastUpdateDate = DateTime.Now;
 
         var result = await InsertOrMerge(entity);
 

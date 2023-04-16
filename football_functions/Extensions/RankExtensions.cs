@@ -16,12 +16,29 @@ public static class RankExtensions
         if (rank.Length == 0)
             return 0;
 
-        var dateTime = new DateOnly(DateTime.Now.Year, DateTime.Now.Month,17);
+        var dateTime = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, 17);
+
+        var oneMonthAgoDate = dateTime.AddMonths(-1);
+
+        var ranks = rank.Where(r => r.DateOnlyGeneral() >= oneMonthAgoDate).OrderBy(c => c.Date).ToList();
+        var count = ranks.Count;
+
+
+        if (count >= 8)
+            return Math.Round(ranks.Sum(r => r.Score) / count, 2);
+
+        var oneAndHalfMonthAgoDate = oneMonthAgoDate.AddDays(-14);
+
+        ranks = rank.Where(r => r.DateOnlyGeneral() >= oneAndHalfMonthAgoDate).OrderBy(c => c.Date).ToList();
+        count = ranks.Count;
+
+        if (count >= 5)
+            return Math.Round(ranks.Sum(r => r.Score) / count, 2);
 
         var twoMonthsAgoDate = dateTime.AddMonths(-2);
 
-        var ranks = rank.Where(r => r.DateOnlyGeneral() >= twoMonthsAgoDate).OrderBy(c => c.Date).ToList();
-        var count = ranks.Count;
+        ranks = rank.Where(r => r.DateOnlyGeneral() >= twoMonthsAgoDate).OrderBy(c => c.Date).ToList();
+        count = ranks.Count;
 
         if (count >= 8)
             return Math.Round(ranks.Sum(r => r.Score) / count, 2);

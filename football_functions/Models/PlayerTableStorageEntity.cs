@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using football_functions.DTOs;
 using football_functions.DTOs.Response;
 using Microsoft.Azure.Cosmos.Table;
@@ -12,6 +13,7 @@ public class PlayerTableStorageEntity : TableEntity
     {
 
     }
+
     public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks)
     {
         PartitionKey = partitionKey;
@@ -22,8 +24,12 @@ public class PlayerTableStorageEntity : TableEntity
     }
 
     public double Score { get; set; } = 0;
+
     public string Name { get; set; } = string.Empty;
+
     public string Ranks { get; set; } = string.Empty;
+
+    public DateTime LastUpdateDate { get; set; }
 
     public PlayerDTO ToPlayerDTO()
     {
