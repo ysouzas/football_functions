@@ -7,7 +7,7 @@ namespace football_functions.Services.Interfaces;
 
 public interface IPlayerTableStorage : ITableStorage<PlayerTableStorageEntity>
 {
-    public Task<TableResult> AddRank(AddRankDTO dto);
+    public Task<PlayerTableStorageEntity> AddRank(AddRankDTO dto);
 
     public Task<TableResult> UpdateScore(PlayerTableStorageEntity entity);
 

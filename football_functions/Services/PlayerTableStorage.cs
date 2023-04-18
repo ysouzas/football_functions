@@ -28,7 +28,7 @@ public class PlayerTableStorage : IPlayerTableStorage
         _table = tableClient.GetTableReference("football");
     }
 
-    public async Task<TableResult> AddRank(AddRankDTO dto)
+    public async Task<PlayerTableStorageEntity> AddRank(AddRankDTO dto)
     {
         var playerEntity = GetById(dto.Id);
 
@@ -40,7 +40,9 @@ public class PlayerTableStorage : IPlayerTableStorage
 
         var tableResult = await InsertOrMerge(playerEntity);
 
-        return tableResult;
+        var entity = GetById(dto.Id);
+
+        return entity;
     }
 
     public async Task<IEnumerable<PlayerTableStorageEntity>> GetAll()

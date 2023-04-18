@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json;
 using football_functions.DTOs;
 using football_functions.DTOs.Response;
@@ -40,7 +41,7 @@ public class PlayerTableStorageEntity : TableEntity
     {
         var ranks = JsonSerializer.Deserialize<RankDTO[]>(Ranks);
 
-        return new PlayerWithRanksDTO(Name, RowKey, (decimal)Score, ranks);
+        return new PlayerWithRanksDTO(Name, RowKey, (decimal)Score, ranks.OrderByDescending(r => r.Date).ToArray());
     }
 }
 

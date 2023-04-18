@@ -24,16 +24,12 @@ namespace football_functions.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            };
-
-            var rankToAdd = JsonSerializer.Deserialize<AddRankDTO>(req.Body, options);
+            var rankToAdd = JsonSerializer.Deserialize<AddRankDTO>(req.Body);
 
             var response = await _playerTableStorage.AddRank(rankToAdd);
+            var playerWithRanksDTO = response.ToPlayerWithRanksDTO();
 
-            return new OkObjectResult(response.Result);
+            return new OkObjectResult(playerWithRanksDTO);
         }
     }
 }
