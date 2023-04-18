@@ -21,7 +21,7 @@ namespace football_functions.Functions
 
         [FunctionName("Rank")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             var options = new JsonSerializerOptions
