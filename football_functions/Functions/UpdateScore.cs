@@ -18,7 +18,7 @@ public class UpdateScore
 
 
     [FunctionName("UpdateScore")]
-    public async Task Run([TimerTrigger("0 0 10 * * 1,3")] TimerInfo myTimer, ILogger log)
+    public async Task Run([TimerTrigger("0 0 8 * * 1,3")] TimerInfo myTimer, ILogger log)
     {
         var playersEntity = await _playerTableStorage.GetAll();
         TableResult result = null;
