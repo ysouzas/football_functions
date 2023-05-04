@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using football_functions.DTOs;
 using football_functions.DTOs.Response;
-using football_functions.Extensions;
 using football_functions.Services.Interfaces;
 
 namespace football_functions.Services
 {
     public class Dealer : IDealer
     {
-        public TeamDTO[] SortTeamsRandom(IEnumerable<PlayerDTO> players, int numberOfTeams)
+        public TeamDTO[] SortTeamsRandom(IEnumerable<PlayerDTO> players, int numberOfTeams, int numberOfPlayers)
         {
+            var finalTeam = numberOfTeams == 2 ? 1 : 2;
+
             var numberOfPossibilities = 1000000;
             TeamDTO[] teams = Array.Empty<TeamDTO>();
 
@@ -24,10 +25,9 @@ namespace football_functions.Services
             {
                 var r = new Random();
 
-                var randomTeams = players.OrderBy(i => r.Next()).Chunk(5).OrderBy(p => p.Sum(p => p.Score)).ToArray();
+                var randomTeams = players.OrderBy(i => r.Next()).Chunk(numberOfPlayers).OrderBy(p => p.Sum(p => p.Score)).ToArray();
                 var differenceFromTeam0 = randomTeams[0].Sum(p => p.Score);
-                var differenceFromTeam1 = randomTeams[1].Sum(p => p.Score);
-                var differenceFromTeam2 = randomTeams[2].Sum(p => p.Score);
+                var differenceFromTeam2 = randomTeams[finalTeam].Sum(p => p.Score);
 
                 var differenceBetweenTeam2And0 = differenceFromTeam2 - differenceFromTeam0;
 

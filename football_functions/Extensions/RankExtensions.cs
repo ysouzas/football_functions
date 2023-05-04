@@ -34,14 +34,6 @@ public static class RankExtensions
         if (count >= 8)
             return Math.Round(ranks.Sum(r => r.Score) / count, 2);
 
-        var threeMonthsAgoDate = dateTime.AddMonths(-3);
-
-        ranks = rank.Where(r => r.DateOnlyGeneral() > threeMonthsAgoDate).OrderBy(c => c.Date).ToList();
-        count = ranks.Count;
-
-        if (count >= 10)
-            return Math.Round(ranks.Sum(r => r.Score) / count, 2);
-
         return Math.Round(rank.Sum(r => r.Score) / rank.Length, 2);
     }
 }

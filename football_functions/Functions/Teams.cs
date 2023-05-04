@@ -32,7 +32,24 @@ public class Teams
 
         var ids = JsonSerializer.Deserialize<List<string>>(req.Body);
         playersDTO = playersDTO.Where(p => ids.Contains(p.Id)).ToList();
-        var teams = _dealer.SortTeamsRandom(playersDTO, 3);
+
+        var numberOfTeams = 3;
+        var numberOfPlayers = 5;
+        if (ids.Count > 21)
+        {
+            numberOfTeams = 2;
+
+            numberOfPlayers = ids.Count % 2 == 0 ? ids.Count / 2 : ids.Count / 2 + 1;
+
+        }
+        else if (ids.Count > 15)
+        {
+            numberOfTeams = 3;
+
+            numberOfPlayers = ids.Count % 3 == 0 ? ids.Count / 3 : ids.Count / 3 + 1;
+        }
+
+        var teams = _dealer.SortTeamsRandom(playersDTO, numberOfTeams, numberOfPlayers);
         return new OkObjectResult(teams);
 
     }
