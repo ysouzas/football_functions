@@ -11,5 +11,7 @@ public interface ITableStorage<T>
     PlayerTableStorageEntity GetById(string id);
 
     Task<TableResult> InsertOrMerge(T entity);
+    
+    Task<PlayerTableStorageEntity> InsertOrReplace(T entity);
 }
 

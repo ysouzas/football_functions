@@ -22,6 +22,7 @@ public class PlayerTableStorageEntity : TableEntity
         Score = score;
         Name = name;
         Ranks = ranks;
+        LastUpdateDate = DateTime.UtcNow;
     }
 
     public double Score { get; set; } = 0;
@@ -41,7 +42,8 @@ public class PlayerTableStorageEntity : TableEntity
     {
         var ranks = JsonSerializer.Deserialize<RankDTO[]>(Ranks);
 
-        return new PlayerWithRanksDTO(Name, RowKey, (decimal)Score, ranks.OrderByDescending(r => r.Date).ToArray());
+        ranks = ranks.Length > 0 ? ranks.OrderByDescending(r => r.Date).ToArray(): Array.Empty<RankDTO>();
+        return new PlayerWithRanksDTO(Name, RowKey, (decimal)Score, ranks);
     }
 }
 

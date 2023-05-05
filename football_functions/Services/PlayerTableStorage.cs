@@ -73,6 +73,15 @@ public class PlayerTableStorage : IPlayerTableStorage
         return tableResult;
     }
 
+    public async Task<PlayerTableStorageEntity> InsertOrReplace(PlayerTableStorageEntity entity)
+    {
+        var insertOrMergeOperation = TableOperation.InsertOrReplace(entity);
+
+        var tableResult = await _table.ExecuteAsync(insertOrMergeOperation);
+
+        return GetById(entity.RowKey);
+    }
+
     public async Task<TableResult> UpdateScore(PlayerTableStorageEntity entity)
     {
 
