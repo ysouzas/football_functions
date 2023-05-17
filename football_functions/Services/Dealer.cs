@@ -11,6 +11,7 @@ namespace football_functions.Services
     {
         public TeamDTO[] SortTeamsRandom(IEnumerable<PlayerDTO> players, int numberOfTeams, int numberOfPlayers)
         {
+            var inicialTeam = 0;
             var finalTeam = numberOfTeams == 2 ? 1 : 2;
 
             var numberOfPossibilities = 1000000;
@@ -21,12 +22,19 @@ namespace football_functions.Services
 
             var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
 
+            if (numberOfPlayers < 12)
+            {
+                acceptableDifference = 10M;
+                inicialTeam = 1;
+                finalTeam = 2;
+            }
+
             for (int i = 0; i < numberOfPossibilities; i++)
             {
                 var r = new Random();
 
                 var randomTeams = players.OrderBy(i => r.Next()).Chunk(numberOfPlayers).OrderBy(p => p.Sum(p => p.Score)).ToArray();
-                var differenceFromTeam0 = randomTeams[0].Sum(p => p.Score);
+                var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);
                 var differenceFromTeam2 = randomTeams[finalTeam].Sum(p => p.Score);
 
                 var differenceBetweenTeam2And0 = differenceFromTeam2 - differenceFromTeam0;
