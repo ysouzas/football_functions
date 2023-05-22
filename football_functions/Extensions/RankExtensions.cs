@@ -18,7 +18,7 @@ public static class RankExtensions
 
         var dateTime = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-        for (int i = 1; i <= 6; i++)
+        for (int i = 2; i <= 6; i++)
         {
             var montAgoDate = dateTime.AddMonths((-1 * i));
 
