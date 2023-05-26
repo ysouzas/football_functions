@@ -84,15 +84,12 @@ public class PlayerTableStorage : IPlayerTableStorage
 
     public async Task<TableResult> UpdateScore(PlayerTableStorageEntity entity)
     {
-
-        var ranks = JsonSerializer.Deserialize<RankDTO[]>(entity.Ranks);
-        var score = ranks.GenerateScore();
+        var score = entity.GenerateScore();
 
         if (score != 0)
             entity.Score = (double)score;
 
         entity.LastUpdateDate = DateTime.Now;
-
         var result = await InsertOrMerge(entity);
 
         return result;

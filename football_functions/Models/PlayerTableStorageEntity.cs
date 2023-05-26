@@ -33,6 +33,8 @@ public class PlayerTableStorageEntity : TableEntity
 
     public DateTime LastUpdateDate { get; set; }
 
+    public int Mensalista { get; set; }
+
     public PlayerDTO ToPlayerDTO()
     {
         return new PlayerDTO(Name, RowKey, ((decimal)Score));
