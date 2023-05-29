@@ -22,26 +22,27 @@ public static class RankExtensions
 
         var dateTime = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-        for (int i = 2; i <= 5; i++)
-        {
-            var j = i;
-            var numberOfRanks = (4 * i);
+        var oneMonthAgoDate = dateTime.AddMonths(-1);
 
-            if (entity.Mensalista > 1)
-            {
-                j = i - 1;
+        var oneMonthRanks = ranks.Where(r => r.DateOnlyGeneral() > oneMonthAgoDate).OrderBy(c => c.Date).ToList();
+        var count = oneMonthRanks.Count;
 
-                numberOfRanks = entity.Mensalista > j ? (4 * entity.Mensalista) : (4 * j);
-            }
+        if (count >= 8)
+            return Math.Round(oneMonthRanks.Sum(r => r.Score) / count, 2);
 
-            var montAgoDate = dateTime.AddMonths(j * -1);
+        var twoMonthsAgoDate = dateTime.AddMonths(-2);
 
-            var rank = ranks.Where(r => r.DateOnlyGeneral() > montAgoDate).OrderBy(c => c.Date).ToList();
-            var count = rank.Count;
+        var twoMonthsRanks = ranks.Where(r => r.DateOnlyGeneral() > twoMonthsAgoDate).OrderBy(c => c.Date).ToList();
+        count = twoMonthsRanks.Count;
 
-            if (count >= numberOfRanks)
-                return Math.Round(rank.Sum(r => r.Score) / count, 2);
-        }
+        if (count >= 8)
+            return Math.Round(twoMonthsRanks.Sum(r => r.Score) / count, 2);
+
+        var yearRanks = ranks.Where(r => r.DateOnlyGeneral().Year == DateTime.Now.Year).OrderBy(c => c.Date).ToList();
+        count = yearRanks.Count;
+
+        if (count >= 8)
+            return Math.Round(yearRanks.Sum(r => r.Score) / count, 2);
 
         return Math.Round(ranks.Sum(r => r.Score) / ranks.Length, 2);
     }
