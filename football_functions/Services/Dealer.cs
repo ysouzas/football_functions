@@ -17,7 +17,7 @@ namespace football_functions.Services
             var numberOfPossibilities = 1000000;
             TeamDTO[] teams = Array.Empty<TeamDTO>();
 
-            decimal bet = 0.10M;
+            decimal bet = 1.0M;
             var totalScore = players.Sum(p => p.Score);
 
             var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
