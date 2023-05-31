@@ -22,9 +22,8 @@ namespace football_functions.Services
 
             var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
 
-            if (players.Count() < 12)
+            if (players.Count() < 12 || players.Count() == 14)
             {
-                acceptableDifference = 10M;
                 inicialTeam = 1;
                 finalTeam = 2;
             }
