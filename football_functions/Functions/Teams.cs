@@ -54,6 +54,12 @@ public class Teams
 
             numberOfPlayers = 4;
         }
+        else if (ids.Count == 14)
+        {
+            numberOfTeams = 3;
+
+            numberOfPlayers = 5;
+        }
 
         var teams = _dealer.SortTeamsRandom(playersDTO, numberOfTeams, numberOfPlayers);
         return new OkObjectResult(teams);
