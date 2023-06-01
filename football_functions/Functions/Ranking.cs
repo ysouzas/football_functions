@@ -28,7 +28,7 @@ public class Ranking
         ILogger log)
     {
         var dateTime = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-        var twoMonthAgoDate = dateTime.AddMonths(-2);
+        var twoMonthAgoDate = dateTime.AddMonths(-1);
         var playersEntity = await _playerTableStorage.GetAll();
         var playersDTO = playersEntity.Select(p => p.ToPlayerWithRanksDTO()).Where(p => p.Ranks.Any(r => r.DateOnlyGeneral() >= twoMonthAgoDate)).OrderByDescending(p => p.Score).ToList();
 
@@ -42,7 +42,7 @@ public class Ranking
             text += $"{i + 1} - {player.Name} - {player.Score:0.00}\n";
         }
 
-        return new OkObjectResult(text);
+        return new JsonResult(text);
 
     }
 }
