@@ -15,7 +15,7 @@ public class PlayerTableStorageEntity : TableEntity
 
     }
 
-    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks)
+    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, bool goalkeeper = false)
     {
         PartitionKey = partitionKey;
         RowKey = rowKey;
@@ -23,6 +23,7 @@ public class PlayerTableStorageEntity : TableEntity
         Name = name;
         Ranks = ranks;
         LastUpdateDate = DateTime.UtcNow;
+        Goalkeeper = goalkeeper;
     }
 
     public double Score { get; set; } = 0;
@@ -31,18 +32,20 @@ public class PlayerTableStorageEntity : TableEntity
 
     public string Ranks { get; set; } = string.Empty;
 
+    public bool Goalkeeper { get; set; } = false;
+
     public DateTime LastUpdateDate { get; set; }
 
     public PlayerDTO ToPlayerDTO()
     {
-        return new PlayerDTO(Name, RowKey, ((decimal)Score));
+        return new PlayerDTO(Name, RowKey, ((decimal)Score), Goalkeeper);
     }
 
     public PlayerWithRanksDTO ToPlayerWithRanksDTO()
     {
         var ranks = JsonSerializer.Deserialize<RankDTO[]>(Ranks);
 
-        ranks = ranks.Length > 0 ? ranks.OrderByDescending(r => r.Date).ToArray(): Array.Empty<RankDTO>();
+        ranks = ranks.Length > 0 ? ranks.OrderByDescending(r => r.Date).ToArray() : Array.Empty<RankDTO>();
         return new PlayerWithRanksDTO(Name, RowKey, (decimal)Score, ranks);
     }
 }

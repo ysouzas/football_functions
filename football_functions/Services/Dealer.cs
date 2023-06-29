@@ -33,6 +33,21 @@ public class Dealer : IDealer
             var r = new Random();
 
             var randomTeams = players.OrderBy(i => r.Next()).Chunk(numberOfPlayers).OrderBy(p => p.Sum(p => p.Score)).ToArray();
+
+            var hasRandomTeam3MoreThanOneGoalkeeper = false;
+
+            var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Goalkeeper) > 1;
+            var hasRandomTeam2MoreThanOneGoalkeeper = randomTeams[finalTeam].Count(p => p.Goalkeeper) > 1;
+
+            if (numberOfTeams > 2)
+            {
+                hasRandomTeam3MoreThanOneGoalkeeper = randomTeams[1].Count(p => p.Goalkeeper) > 1;
+
+            }
+
+            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper)
+                continue;
+
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);
             var differenceFromTeam2 = randomTeams[finalTeam].Sum(p => p.Score);
 
