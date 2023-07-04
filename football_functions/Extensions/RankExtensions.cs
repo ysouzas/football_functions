@@ -20,7 +20,7 @@ public static class RankExtensions
         if (ranks.Length == 0)
             return 0;
 
-        var dateTime = new DateOnly(DateTime.Now.Year, 07, 01);
+        var dateTime = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, 01);
 
         var oneMonthAgoDate = dateTime.AddMonths(-1);
 
@@ -37,12 +37,6 @@ public static class RankExtensions
 
         if (count >= 8)
             return Math.Round(twoMonthsRanks.Sum(r => r.Score) / count, 2);
-
-        var yearRanks = ranks.Where(r => r.DateOnlyGeneral().Year == DateTime.Now.Year).OrderBy(c => c.Date).ToList();
-        count = yearRanks.Count;
-
-        if (count >= 8)
-            return Math.Round(yearRanks.Sum(r => r.Score) / count, 2);
 
         return Math.Round(ranks.Sum(r => r.Score) / ranks.Length, 2);
     }
