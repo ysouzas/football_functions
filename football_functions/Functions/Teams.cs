@@ -31,6 +31,7 @@ public class Teams
         var playersDTO = playersEntity.Select(p => p.ToPlayerDTO()).OrderByDescending(p => p.Score).ToList();
 
         var ids = JsonSerializer.Deserialize<List<string>>(req.Body);
+
         playersDTO = playersDTO.Where(p => ids.Contains(p.Id)).ToList();
 
         var numberOfTeams = 3;
