@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using football_functions.DTOs;
 using football_functions.DTOs.Response;
+using football_functions.Models.Enums;
 using Microsoft.Azure.Cosmos.Table;
 
 namespace football_functions.Models;
@@ -15,7 +16,7 @@ public class PlayerTableStorageEntity : TableEntity
 
     }
 
-    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, bool goalkeeper = false)
+    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, int position)
     {
         PartitionKey = partitionKey;
         RowKey = rowKey;
@@ -23,7 +24,7 @@ public class PlayerTableStorageEntity : TableEntity
         Name = name;
         Ranks = ranks;
         LastUpdateDate = DateTime.UtcNow;
-        Goalkeeper = goalkeeper;
+        Position = position;
     }
 
     public double Score { get; set; } = 0;
@@ -32,13 +33,13 @@ public class PlayerTableStorageEntity : TableEntity
 
     public string Ranks { get; set; } = string.Empty;
 
-    public bool Goalkeeper { get; set; } = false;
+    public int Position { get; set; }
 
     public DateTime LastUpdateDate { get; set; }
 
     public PlayerDTO ToPlayerDTO()
     {
-        return new PlayerDTO(Name, RowKey, ((decimal)Score), Goalkeeper);
+        return new PlayerDTO(Name, RowKey, ((decimal)Score), Position);
     }
 
     public PlayerWithRanksDTO ToPlayerWithRanksDTO()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using football_functions.DTOs;
 using football_functions.DTOs.Response;
+using football_functions.Models.Enums;
 using football_functions.Services.Interfaces;
 
 namespace football_functions.Services;
@@ -36,17 +37,32 @@ public class Dealer : IDealer
 
             var hasRandomTeam3MoreThanOneGoalkeeper = false;
 
-            var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Goalkeeper) > 1;
-            var hasRandomTeam2MoreThanOneGoalkeeper = randomTeams[finalTeam].Count(p => p.Goalkeeper) > 1;
+            var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
+            var hasRandomTeam2MoreThanOneGoalkeeper = randomTeams[finalTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
 
             if (numberOfTeams > 2)
             {
-                hasRandomTeam3MoreThanOneGoalkeeper = randomTeams[1].Count(p => p.Goalkeeper) > 1;
-
+                hasRandomTeam3MoreThanOneGoalkeeper = randomTeams[1].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
             }
 
-            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper)
+            var oneTeamHasMoreThanHalfDefender = false;
+
+            if (numberOfTeams == 2)
+            {
+                var numberOfDefenders = Math.Round(players.Count(p => p.Position == (int)Position.Defender) * 0.5);
+
+                oneTeamHasMoreThanHalfDefender = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Defender) > numberOfDefenders;
+
+                oneTeamHasMoreThanHalfDefender = oneTeamHasMoreThanHalfDefender ?
+                                                 oneTeamHasMoreThanHalfDefender :
+                                                 randomTeams[finalTeam].Count(p => p.Position == (int)Position.Defender) > numberOfDefenders;
+            }
+
+            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper || oneTeamHasMoreThanHalfDefender)
                 continue;
+
+
+
 
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);
             var differenceFromTeam2 = randomTeams[finalTeam].Sum(p => p.Score);

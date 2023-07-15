@@ -1,3 +1,5 @@
-﻿namespace football_functions.DTOs;
+﻿using football_functions.Models.Enums;
 
-public readonly record struct PlayerDTO(string Name, string Id, decimal Score, bool Goalkeeper);
+namespace football_functions.DTOs;
+
+public readonly record struct PlayerDTO(string Name, string Id, decimal Score, int Position);

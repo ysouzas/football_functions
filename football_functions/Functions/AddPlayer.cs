@@ -34,7 +34,8 @@ public class AddPlayer
             Guid.NewGuid().ToString(),
             (double)player.Score,
             player.Name,
-            "[]"
+            "[]",
+            0
             );
 
         var playersEntity = await _playerTableStorage.InsertOrReplace(entity);
