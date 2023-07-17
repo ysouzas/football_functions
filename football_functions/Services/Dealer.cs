@@ -15,7 +15,7 @@ public class Dealer : IDealer
         var inicialTeam = 0;
         var finalTeam = numberOfTeams == 2 ? 1 : 2;
 
-        var numberOfPossibilities = 1000000;
+        var numberOfPossibilities = 1000000000;
         TeamDTO[] teams = Array.Empty<TeamDTO>();
 
         decimal bet = 10.0M;
@@ -46,19 +46,29 @@ public class Dealer : IDealer
             }
 
             var oneTeamHasMoreThanHalfDefender = false;
+            var oneTeamHasMoreThanHalfWinger = false;
 
             if (numberOfTeams == 2)
             {
-                var numberOfDefenders = Math.Round(players.Count(p => p.Position == (int)Position.Defender) * 0.5);
+                var numberOfDefenders = players.Count(p => p.Position == (int)Position.Defender);
+                var accptableDefenders = (int)Math.Ceiling(numberOfDefenders * 0.5);
 
                 oneTeamHasMoreThanHalfDefender = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Defender) > numberOfDefenders;
 
                 oneTeamHasMoreThanHalfDefender = oneTeamHasMoreThanHalfDefender ?
                                                  oneTeamHasMoreThanHalfDefender :
                                                  randomTeams[finalTeam].Count(p => p.Position == (int)Position.Defender) > numberOfDefenders;
+
+                var numberOfWingers = (int)Math.Ceiling(players.Count(p => p.Position == (int)Position.Winger) * 0.5);
+
+                oneTeamHasMoreThanHalfWinger = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Winger) > numberOfWingers;
+
+                oneTeamHasMoreThanHalfWinger = oneTeamHasMoreThanHalfWinger ?
+                                                 oneTeamHasMoreThanHalfWinger :
+                                                 randomTeams[finalTeam].Count(p => p.Position == (int)Position.Winger) > numberOfWingers;
             }
 
-            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper || oneTeamHasMoreThanHalfDefender)
+            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper || oneTeamHasMoreThanHalfWinger || oneTeamHasMoreThanHalfDefender)
                 continue;
 
 
