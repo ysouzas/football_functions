@@ -53,11 +53,11 @@ public class Dealer : IDealer
                 var numberOfDefenders = players.Count(p => p.Position == (int)Position.Defender);
                 var accptableDefenders = Math.Ceiling(numberOfDefenders * 0.5);
 
-                oneTeamHasMoreThanHalfDefender = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Defender) > numberOfDefenders;
+                oneTeamHasMoreThanHalfDefender = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Defender) > accptableDefenders;
 
                 oneTeamHasMoreThanHalfDefender = oneTeamHasMoreThanHalfDefender ?
                                                  oneTeamHasMoreThanHalfDefender :
-                                                 randomTeams[finalTeam].Count(p => p.Position == (int)Position.Defender) > numberOfDefenders;
+                                                 randomTeams[finalTeam].Count(p => p.Position == (int)Position.Defender) > accptableDefenders;
 
                 var numberOfWingers = Math.Ceiling(players.Count(p => p.Position == (int)Position.Winger) * 0.5);
 
