@@ -71,9 +71,6 @@ public class Dealer : IDealer
             if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper || oneTeamHasMoreThanHalfWinger || oneTeamHasMoreThanHalfDefender)
                 continue;
 
-
-
-
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);
             var differenceFromTeam2 = randomTeams[finalTeam].Sum(p => p.Score);
 
