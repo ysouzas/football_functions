@@ -18,7 +18,7 @@ public class Dealer : IDealer
         var numberOfPossibilities = 1000000;
         TeamDTO[] teams = Array.Empty<TeamDTO>();
 
-        decimal bet = 15.0M;
+        decimal bet = 10.0M;
         var totalScore = players.Sum(p => p.Score);
 
         var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
