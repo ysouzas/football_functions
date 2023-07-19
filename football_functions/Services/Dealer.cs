@@ -47,28 +47,17 @@ public class Dealer : IDealer
 
             var oneTeamHasMoreThanHalfDefender = false;
             var oneTeamHasMoreThanHalfWinger = false;
+            var oneTeamHasMoreThanHalfDefensiveMidfielder = false;
+
 
             if (numberOfTeams == 2)
             {
-                var numberOfDefenders = players.Count(p => p.Position == (int)Position.Defender);
-                var accptableDefenders = Math.Ceiling(numberOfDefenders * 0.5);
-
-                oneTeamHasMoreThanHalfDefender = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Defender) > accptableDefenders;
-
-                oneTeamHasMoreThanHalfDefender = oneTeamHasMoreThanHalfDefender ?
-                                                 oneTeamHasMoreThanHalfDefender :
-                                                 randomTeams[finalTeam].Count(p => p.Position == (int)Position.Defender) > accptableDefenders;
-
-                var numberOfWingers = Math.Ceiling(players.Count(p => p.Position == (int)Position.Winger) * 0.5);
-
-                oneTeamHasMoreThanHalfWinger = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Winger) > numberOfWingers;
-
-                oneTeamHasMoreThanHalfWinger = oneTeamHasMoreThanHalfWinger ?
-                                                 oneTeamHasMoreThanHalfWinger :
-                                                 randomTeams[finalTeam].Count(p => p.Position == (int)Position.Winger) > numberOfWingers;
+                oneTeamHasMoreThanHalfDefender = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Defender, inicialTeam, finalTeam);
+                oneTeamHasMoreThanHalfWinger = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Winger, inicialTeam, finalTeam);
+                oneTeamHasMoreThanHalfDefensiveMidfielder = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.DefensiveMidfielder, inicialTeam, finalTeam);
             }
 
-            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper || oneTeamHasMoreThanHalfWinger || oneTeamHasMoreThanHalfDefender)
+            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper || oneTeamHasMoreThanHalfWinger || oneTeamHasMoreThanHalfDefender || oneTeamHasMoreThanHalfDefensiveMidfielder)
                 continue;
 
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);
@@ -89,5 +78,16 @@ public class Dealer : IDealer
         }
 
         return teams;
+    }
+
+    private bool HasMoreThanHalfPlayersOfPosition(PlayerDTO[][] randomTeams, IEnumerable<PlayerDTO> players, Position position, int inicialTeam, int finalTeam)
+    {
+        var accptableNumber = Math.Ceiling(players.Count(p => p.Position == (int)position) * 0.5);
+
+        var oneTeamHasMoreThanHalfPosition = randomTeams[inicialTeam].Count(p => p.Position == (int)position) > accptableNumber;
+
+        return oneTeamHasMoreThanHalfPosition ?
+                                          oneTeamHasMoreThanHalfPosition :
+                                          randomTeams[finalTeam].Count(p => p.Position == (int)position) > accptableNumber;
     }
 }
