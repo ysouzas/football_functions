@@ -44,7 +44,7 @@ public class Teams
 
             numberOfPlayers = ids.Count % 2 == 0 ? ids.Count / 2 : ids.Count / 2 + 1;
         }
-        if (ids.Count > 21)
+        else if(ids.Count > 21)
         {
             numberOfTeams = 2;
 
