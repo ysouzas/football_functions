@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using football_functions.Models.Enums;
 using football_functions.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,12 +37,18 @@ public class Teams
 
         var numberOfTeams = 3;
         var numberOfPlayers = 5;
+
+        if(ids.Count == 20 && !playersDTO.Any(p=> p.Position == (int)Position.Goalkeeper))
+        {
+            numberOfTeams = 2;
+
+            numberOfPlayers = ids.Count % 2 == 0 ? ids.Count / 2 : ids.Count / 2 + 1;
+        }
         if (ids.Count > 21)
         {
             numberOfTeams = 2;
 
             numberOfPlayers = ids.Count % 2 == 0 ? ids.Count / 2 : ids.Count / 2 + 1;
-
         }
         else if (ids.Count > 15)
         {
