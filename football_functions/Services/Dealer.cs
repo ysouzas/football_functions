@@ -48,6 +48,7 @@ public class Dealer : IDealer
             var oneTeamHasMoreThanHalfDefender = false;
             var oneTeamHasMoreThanHalfWinger = false;
             var oneTeamHasMoreThanHalfDefensiveMidfielder = false;
+            var oneTeamHasMoreThanHalfCentralMidfielder = false;
 
 
             if (numberOfTeams == 2)
@@ -55,9 +56,12 @@ public class Dealer : IDealer
                 oneTeamHasMoreThanHalfDefender = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Defender, inicialTeam, finalTeam);
                 oneTeamHasMoreThanHalfWinger = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Winger, inicialTeam, finalTeam);
                 oneTeamHasMoreThanHalfDefensiveMidfielder = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.DefensiveMidfielder, inicialTeam, finalTeam);
+                oneTeamHasMoreThanHalfCentralMidfielder = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.CentralMidfielder, inicialTeam, finalTeam);
             }
 
-            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper || oneTeamHasMoreThanHalfWinger || oneTeamHasMoreThanHalfDefender || oneTeamHasMoreThanHalfDefensiveMidfielder)
+            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper ||
+                oneTeamHasMoreThanHalfWinger || oneTeamHasMoreThanHalfDefender || oneTeamHasMoreThanHalfDefensiveMidfielder ||
+                oneTeamHasMoreThanHalfCentralMidfielder)
                 continue;
 
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);

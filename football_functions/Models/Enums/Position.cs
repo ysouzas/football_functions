@@ -6,6 +6,6 @@ public enum Position
     Defender = 2,
     Winger = 3,
     DefensiveMidfielder = 4,
-
+    CentralMidfielder = 5,
 }
 
