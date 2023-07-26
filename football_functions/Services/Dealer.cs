@@ -36,6 +36,8 @@ public class Dealer : IDealer
             var randomTeams = players.OrderBy(i => r.Next()).Chunk(numberOfPlayers).OrderBy(p => p.Sum(p => p.Score)).ToArray();
 
             var hasRandomTeam3MoreThanOneGoalkeeper = false;
+            var hasMoreThanOneAvoidSameTeam = randomTeams[inicialTeam].Count(p => p.AvoidSameTeam is true) > 1;
+            hasMoreThanOneAvoidSameTeam = hasMoreThanOneAvoidSameTeam ? hasMoreThanOneAvoidSameTeam : randomTeams[finalTeam].Count(p => p.AvoidSameTeam is true) > 1;
 
             var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
             var hasRandomTeam2MoreThanOneGoalkeeper = randomTeams[finalTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
@@ -43,13 +45,13 @@ public class Dealer : IDealer
             if (numberOfTeams > 2)
             {
                 hasRandomTeam3MoreThanOneGoalkeeper = randomTeams[1].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
+                hasMoreThanOneAvoidSameTeam = hasMoreThanOneAvoidSameTeam ? hasMoreThanOneAvoidSameTeam : randomTeams[1].Count(p => p.AvoidSameTeam is true) > 1;
             }
 
             var oneTeamHasMoreThanHalfDefender = false;
             var oneTeamHasMoreThanHalfWinger = false;
             var oneTeamHasMoreThanHalfDefensiveMidfielder = false;
             var oneTeamHasMoreThanHalfCentralMidfielder = false;
-
 
             if (numberOfTeams == 2)
             {
@@ -61,7 +63,7 @@ public class Dealer : IDealer
 
             if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper ||
                 oneTeamHasMoreThanHalfWinger || oneTeamHasMoreThanHalfDefender || oneTeamHasMoreThanHalfDefensiveMidfielder ||
-                oneTeamHasMoreThanHalfCentralMidfielder)
+                oneTeamHasMoreThanHalfCentralMidfielder || hasMoreThanOneAvoidSameTeam)
                 continue;
 
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);

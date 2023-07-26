@@ -35,7 +35,8 @@ public class AddPlayer
             (double)player.Score,
             player.Name,
             "[]",
-            0
+            999,
+            false
             );
 
         var playersEntity = await _playerTableStorage.InsertOrReplace(entity);
