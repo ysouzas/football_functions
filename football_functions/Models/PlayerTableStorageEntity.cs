@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.Json;
 using football_functions.DTOs;
 using football_functions.DTOs.Response;
-using football_functions.Models.Enums;
 using Microsoft.Azure.Cosmos.Table;
 
 namespace football_functions.Models;

@@ -8,28 +8,27 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 
-namespace football_functions.Functions
+namespace football_functions.Functions;
+
+public class Rank
 {
-    public class Rank
+    private readonly IPlayerTableStorage _playerTableStorage;
+
+    public Rank(IPlayerTableStorage playerTableStorage)
     {
-        private readonly IPlayerTableStorage _playerTableStorage;
+        _playerTableStorage = playerTableStorage;
+    }
 
-        public Rank(IPlayerTableStorage playerTableStorage)
-        {
-            _playerTableStorage = playerTableStorage;
-        }
+    [FunctionName("Rank")]
+    public async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+        ILogger log)
+    {
+        var rankToAdd = JsonSerializer.Deserialize<AddRankDTO>(req.Body);
 
-        [FunctionName("Rank")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
-            ILogger log)
-        {
-            var rankToAdd = JsonSerializer.Deserialize<AddRankDTO>(req.Body);
+        var response = await _playerTableStorage.AddRank(rankToAdd);
+        var playerWithRanksDTO = response.ToPlayerWithRanksDTO();
 
-            var response = await _playerTableStorage.AddRank(rankToAdd);
-            var playerWithRanksDTO = response.ToPlayerWithRanksDTO();
-
-            return new OkObjectResult(playerWithRanksDTO);
-        }
+        return new OkObjectResult(playerWithRanksDTO);
     }
 }

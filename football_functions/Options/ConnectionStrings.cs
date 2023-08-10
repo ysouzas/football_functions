@@ -1,9 +1,7 @@
-﻿using System;
-namespace football_functions.Options
+﻿namespace football_functions.Options;
+
+public class ConnectionStrings
 {
-    public class ConnectionStrings
-    {
-        public string StorageUrl { get; init; }
-    }
+    public string StorageUrl { get; init; }
 }
 
