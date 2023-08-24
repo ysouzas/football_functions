@@ -38,6 +38,13 @@ public static class RankExtensions
         if (count >= 8)
             return Math.Round(twoMonthsRanks.Sum(r => r.Score) / count, 2);
 
+        var yearRanks = ranks.Where(r => r.DateOnlyGeneral().Year == dateTime.Year).OrderBy(c => c.Date).ToList();
+
+        count = yearRanks.Count;
+
+        if (count >= 16)
+            return Math.Round(yearRanks.Sum(r => r.Score) / count, 2);
+
         return Math.Round(ranks.Sum(r => r.Score) / ranks.Length, 2);
     }
 }
