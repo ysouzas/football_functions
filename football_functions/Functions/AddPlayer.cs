@@ -36,6 +36,7 @@ public class AddPlayer
             player.Name,
             "[]",
             999,
+            false,
             false
             );
 

@@ -15,7 +15,7 @@ public class PlayerTableStorageEntity : TableEntity
 
     }
 
-    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, int position, bool avoidSameTeam)
+    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, int position, bool avoidSameTeam, bool needToBeAtSameTeam)
     {
         PartitionKey = partitionKey;
         RowKey = rowKey;
@@ -25,6 +25,7 @@ public class PlayerTableStorageEntity : TableEntity
         LastUpdateDate = DateTime.UtcNow;
         Position = position;
         AvoidSameTeam = avoidSameTeam;
+        NeedToBeAtSameTeam = needToBeAtSameTeam;
     }
 
     public double Score { get; set; } = 0;
@@ -39,9 +40,12 @@ public class PlayerTableStorageEntity : TableEntity
 
     public bool AvoidSameTeam { get; set; }
 
+    public bool NeedToBeAtSameTeam { get; set; }
+      
+
     public PlayerDTO ToPlayerDTO()
     {
-        return new PlayerDTO(Name, RowKey, ((decimal)Score), Position, AvoidSameTeam);
+        return new PlayerDTO(Name, RowKey, ((decimal)Score), Position, AvoidSameTeam, NeedToBeAtSameTeam);
     }
 
     public PlayerWithRanksDTO ToPlayerWithRanksDTO()

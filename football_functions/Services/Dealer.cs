@@ -23,6 +23,8 @@ public class Dealer : IDealer
 
         var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
 
+        var numberOfSameTeam = players.Count(p => p.NeedToBeAtSameTeam is true);
+
         if (players.Count() < 12 || players.Count() == 14)
         {
             inicialTeam = 1;
@@ -39,6 +41,10 @@ public class Dealer : IDealer
             var hasMoreThanOneAvoidSameTeam = randomTeams[inicialTeam].Count(p => p.AvoidSameTeam is true) > 1;
             hasMoreThanOneAvoidSameTeam = hasMoreThanOneAvoidSameTeam ? hasMoreThanOneAvoidSameTeam : randomTeams[finalTeam].Count(p => p.AvoidSameTeam is true) > 1;
 
+
+            var hasOneWithAllSameTeam = randomTeams[inicialTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
+            hasOneWithAllSameTeam = hasOneWithAllSameTeam ? hasOneWithAllSameTeam : randomTeams[finalTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
+
             var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
             var hasRandomTeam2MoreThanOneGoalkeeper = randomTeams[finalTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
 
@@ -46,6 +52,7 @@ public class Dealer : IDealer
             {
                 hasRandomTeam3MoreThanOneGoalkeeper = randomTeams[1].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
                 hasMoreThanOneAvoidSameTeam = hasMoreThanOneAvoidSameTeam ? hasMoreThanOneAvoidSameTeam : randomTeams[1].Count(p => p.AvoidSameTeam is true) > 1;
+                hasOneWithAllSameTeam = hasOneWithAllSameTeam ? hasOneWithAllSameTeam : randomTeams[1].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
             }
 
             var oneTeamHasMoreThanHalfDefender = false;
@@ -63,7 +70,7 @@ public class Dealer : IDealer
 
             if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper ||
                 oneTeamHasMoreThanHalfWinger || oneTeamHasMoreThanHalfDefender || oneTeamHasMoreThanHalfDefensiveMidfielder ||
-                oneTeamHasMoreThanHalfCentralMidfielder || hasMoreThanOneAvoidSameTeam)
+                oneTeamHasMoreThanHalfCentralMidfielder || hasMoreThanOneAvoidSameTeam || !hasOneWithAllSameTeam)
                 continue;
 
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);
