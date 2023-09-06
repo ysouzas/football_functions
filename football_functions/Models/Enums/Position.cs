@@ -5,8 +5,7 @@ public enum Position
     Goalkeeper = 1,
     Defender = 2,
     Winger = 3,
-    DefensiveMidfielder = 4,
-    CentralMidfielder = 5,
-    Forward = 8,
+    Midfielder = 4,
+    Forward = 5,
 }
 

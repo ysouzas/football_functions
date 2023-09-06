@@ -41,7 +41,6 @@ public class Dealer : IDealer
             var hasMoreThanOneAvoidSameTeam = randomTeams[inicialTeam].Count(p => p.AvoidSameTeam is true) > 1;
             hasMoreThanOneAvoidSameTeam = hasMoreThanOneAvoidSameTeam ? hasMoreThanOneAvoidSameTeam : randomTeams[finalTeam].Count(p => p.AvoidSameTeam is true) > 1;
 
-
             var hasOneWithAllSameTeam = randomTeams[inicialTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
             hasOneWithAllSameTeam = hasOneWithAllSameTeam ? hasOneWithAllSameTeam : randomTeams[finalTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
 
@@ -55,24 +54,19 @@ public class Dealer : IDealer
                 hasOneWithAllSameTeam = hasOneWithAllSameTeam ? hasOneWithAllSameTeam : randomTeams[1].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
             }
 
-            var oneTeamHasMoreThanHalfDefender = false;
-            var oneTeamHasMoreThanHalfWinger = false;
-            var oneTeamHasMoreThanHalfDefensiveMidfielder = false;
-            var oneTeamHasMoreThanHalfCentralMidfielder = false;
-            var oneTeamHasMoreThanHalfForward = false;
+            var oneTeamHasMoreThanHalfPosition = false;
 
             if (numberOfTeams == 2)
             {
-                oneTeamHasMoreThanHalfDefender = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Defender, inicialTeam, finalTeam);
-                oneTeamHasMoreThanHalfWinger = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Winger, inicialTeam, finalTeam);
-                oneTeamHasMoreThanHalfDefensiveMidfielder = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.DefensiveMidfielder, inicialTeam, finalTeam);
-                oneTeamHasMoreThanHalfCentralMidfielder = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.CentralMidfielder, inicialTeam, finalTeam);
-                oneTeamHasMoreThanHalfForward = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Forward, inicialTeam, finalTeam);
+                foreach (Position value in Enum.GetValues(typeof(Position)))
+                {
+                    oneTeamHasMoreThanHalfPosition = HasMoreThanHalfPlayersOfPosition(randomTeams, players, value, inicialTeam, finalTeam);
+                    if (oneTeamHasMoreThanHalfPosition) continue;
+                }
             }
 
             if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper ||
-                oneTeamHasMoreThanHalfWinger || oneTeamHasMoreThanHalfDefender || oneTeamHasMoreThanHalfDefensiveMidfielder ||
-                oneTeamHasMoreThanHalfCentralMidfielder || hasMoreThanOneAvoidSameTeam || oneTeamHasMoreThanHalfForward || !hasOneWithAllSameTeam)
+                hasMoreThanOneAvoidSameTeam || oneTeamHasMoreThanHalfPosition || !hasOneWithAllSameTeam)
                 continue;
 
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);
