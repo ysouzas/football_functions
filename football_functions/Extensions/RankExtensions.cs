@@ -8,9 +8,9 @@ namespace football_functions.Extensions;
 
 public static class RankExtensions
 {
-    public static DateOnly DateOnlyGeneral(this RankDTO dto)
+    public static DateOnly DateOnlyGeneral(this DateTime date)
     {
-        return new DateOnly(dto.Date.Year, dto.Date.Month, dto.Date.Day);
+        return new DateOnly(date.Year, date.Month, date.Day);
     }
 
     public static decimal GenerateScore(this PlayerTableStorageEntity entity)
