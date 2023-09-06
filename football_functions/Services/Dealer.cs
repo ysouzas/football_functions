@@ -61,7 +61,7 @@ public class Dealer : IDealer
                 foreach (Position value in Enum.GetValues(typeof(Position)))
                 {
                     oneTeamHasMoreThanHalfPosition = HasMoreThanHalfPlayersOfPosition(randomTeams, players, value, inicialTeam, finalTeam);
-                    if (oneTeamHasMoreThanHalfPosition) continue;
+                    if (oneTeamHasMoreThanHalfPosition) break;
                 }
             }
 
