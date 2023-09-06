@@ -20,7 +20,7 @@ public static class RankExtensions
         if (ranks.Length == 0)
             return 0;
 
-        var dateTime = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now);
+        var dateTime = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
         var oneMonthAgoDate = dateTime.AddMonths(-1);
 
