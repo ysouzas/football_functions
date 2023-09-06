@@ -31,12 +31,6 @@ public class Dealer : IDealer
             finalTeam = 2;
         }
 
-        if (players.Count() == 15)
-        {
-            var updatedPlayersDTO = players.OrderBy(p => p.Score).Select((p, i) => i < 3 ? p with { AvoidSameTeam = true } : p).ToList();
-            players = updatedPlayersDTO;
-        }
-
         for (int i = 0; i < numberOfPossibilities; i++)
         {
             var r = new Random();
@@ -65,6 +59,7 @@ public class Dealer : IDealer
             var oneTeamHasMoreThanHalfWinger = false;
             var oneTeamHasMoreThanHalfDefensiveMidfielder = false;
             var oneTeamHasMoreThanHalfCentralMidfielder = false;
+            var oneTeamHasMoreThanHalfForward = false;
 
             if (numberOfTeams == 2)
             {
@@ -72,11 +67,12 @@ public class Dealer : IDealer
                 oneTeamHasMoreThanHalfWinger = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Winger, inicialTeam, finalTeam);
                 oneTeamHasMoreThanHalfDefensiveMidfielder = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.DefensiveMidfielder, inicialTeam, finalTeam);
                 oneTeamHasMoreThanHalfCentralMidfielder = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.CentralMidfielder, inicialTeam, finalTeam);
+                oneTeamHasMoreThanHalfForward = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Forward, inicialTeam, finalTeam);
             }
 
             if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper ||
                 oneTeamHasMoreThanHalfWinger || oneTeamHasMoreThanHalfDefender || oneTeamHasMoreThanHalfDefensiveMidfielder ||
-                oneTeamHasMoreThanHalfCentralMidfielder || hasMoreThanOneAvoidSameTeam || !hasOneWithAllSameTeam)
+                oneTeamHasMoreThanHalfCentralMidfielder || hasMoreThanOneAvoidSameTeam || oneTeamHasMoreThanHalfForward || !hasOneWithAllSameTeam)
                 continue;
 
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);
@@ -96,7 +92,7 @@ public class Dealer : IDealer
             }
         }
 
-      return teams;
+        return teams;
     }
 
     private bool HasMoreThanHalfPlayersOfPosition(PlayerDTO[][] randomTeams, IEnumerable<PlayerDTO> players, Position position, int inicialTeam, int finalTeam)

@@ -7,5 +7,6 @@ public enum Position
     Winger = 3,
     DefensiveMidfielder = 4,
     CentralMidfielder = 5,
+    Forward = 8,
 }
 
