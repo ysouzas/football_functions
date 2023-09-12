@@ -31,6 +31,12 @@ public class Dealer : IDealer
             finalTeam = 2;
         }
 
+        if (players.Count() == 15)
+        {
+            var updatedPlayersDTO = players.OrderBy(p => p.Score).Select((p, i) => i < 3 ? p with { AvoidSameTeam = true } : p).ToList();
+            players = updatedPlayersDTO;
+        }
+
         for (int i = 0; i < numberOfPossibilities; i++)
         {
             var r = new Random();
