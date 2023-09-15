@@ -27,11 +27,11 @@ public class Ranking
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
         ILogger log)
     {
-        var dateTime = DateTime.Now.DateOnlyGeneral();
+        var dateTime = DateTime.Now.ToDateOnly();
 
         var twoMonthAgoDate = dateTime.AddMonths(-1);
         var playersEntity = await _playerTableStorage.GetAll();
-        var playersDTO = playersEntity.Select(p => p.ToPlayerWithRanksDTO()).Where(p => p.Ranks.Any(r => r.Date.DateOnlyGeneral() >= twoMonthAgoDate)).OrderByDescending(p => p.Score).ToList();
+        var playersDTO = playersEntity.Select(p => p.ToPlayerWithRanksDTO()).Where(p => p.Ranks.Any(r => r.Date.ToDateOnly() >= twoMonthAgoDate)).OrderByDescending(p => p.Score).ToList();
 
         var text = $"Ranking Geral - {dateTime:dd/MM/yyyy}\n";
 

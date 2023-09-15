@@ -8,7 +8,7 @@ namespace football_functions.Extensions;
 
 public static class RankExtensions
 {
-    public static DateOnly DateOnlyGeneral(this DateTime date)
+    public static DateOnly ToDateOnly(this DateTime date)
     {
         return new DateOnly(date.Year, date.Month, date.Day);
     }
@@ -20,9 +20,16 @@ public static class RankExtensions
         if (ranks.Length == 0)
             return 0;
 
-        var eightLastRanks = ranks.OrderByDescending(c => c.Date).Take(8).ToList();
-        var count = eightLastRanks.Count;
+        var tenLastRanks = ranks.OrderByDescending(c => c.Date).Take(10).ToList();
+        var count = tenLastRanks.Count;
 
-        return Math.Round(eightLastRanks.Sum(r => r.Score) / count, 2);
+        if (count >= 10)
+        {
+            tenLastRanks = tenLastRanks.OrderBy(r => r.Score).ToList();
+            tenLastRanks.RemoveAt(0);
+            tenLastRanks.RemoveAt(tenLastRanks.Count - 1);
+        }
+
+        return Math.Round(tenLastRanks.Sum(r => r.Score) / tenLastRanks.Count, 2);
     }
 }
