@@ -33,7 +33,22 @@ public class Dealer : IDealer
 
         if (players.Count() == 15)
         {
-            var updatedPlayersDTO = players.OrderBy(p => p.Score).Select((p, i) => i < 3 ? p with { AvoidSameTeam = true } : p).ToList();
+            var updatedPlayersDTO = players.OrderBy(p => p.Score).Where(p => string.IsNullOrEmpty(p.AvoidSameTeam))
+                                           .Select((p, i) => i < 3 ? p with { AvoidSameTeam = "Last" } : p)
+                                           .Where(p => p.AvoidSameTeam == "Last")
+                                           .ToList();
+
+            var newPlayes = new List<PlayerDTO>();
+
+            foreach (var player in players)
+            {
+                var hasNOT = !updatedPlayersDTO.Where(p => p.Id == player.Id).Any();
+
+                if (hasNOT)
+                    updatedPlayersDTO.Add(player);
+            }
+
+
             players = updatedPlayersDTO;
         }
 
@@ -44,8 +59,25 @@ public class Dealer : IDealer
             var randomTeams = players.OrderBy(i => r.Next()).Chunk(numberOfPlayers).OrderBy(p => p.Sum(p => p.Score)).ToArray();
 
             var hasRandomTeam3MoreThanOneGoalkeeper = false;
-            var hasMoreThanOneAvoidSameTeam = randomTeams[inicialTeam].Count(p => p.AvoidSameTeam is true) > 1;
-            hasMoreThanOneAvoidSameTeam = hasMoreThanOneAvoidSameTeam ? hasMoreThanOneAvoidSameTeam : randomTeams[finalTeam].Count(p => p.AvoidSameTeam is true) > 1;
+
+
+            var allTags = players.Select(p => p.AvoidSameTeam).Where(s => !string.IsNullOrEmpty(s)).Distinct().ToList();
+            var hasMoreThanOneAvoidSameTeam = false;
+
+            foreach (var tag in allTags)
+            {
+                foreach (var team in randomTeams)
+                {
+                    hasMoreThanOneAvoidSameTeam = team.Where(p => !string.IsNullOrEmpty(p.AvoidSameTeam) && p.AvoidSameTeam.Contains(tag)).Count() >= 2;
+
+                    if (hasMoreThanOneAvoidSameTeam) break;
+                }
+                if (hasMoreThanOneAvoidSameTeam) break;
+            }
+
+            if (hasMoreThanOneAvoidSameTeam)
+                continue;
+
 
             var hasOneWithAllSameTeam = randomTeams[inicialTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
             hasOneWithAllSameTeam = hasOneWithAllSameTeam ? hasOneWithAllSameTeam : randomTeams[finalTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
@@ -56,9 +88,12 @@ public class Dealer : IDealer
             if (numberOfTeams > 2)
             {
                 hasRandomTeam3MoreThanOneGoalkeeper = randomTeams[1].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
-                hasMoreThanOneAvoidSameTeam = hasMoreThanOneAvoidSameTeam ? hasMoreThanOneAvoidSameTeam : randomTeams[1].Count(p => p.AvoidSameTeam is true) > 1;
                 hasOneWithAllSameTeam = hasOneWithAllSameTeam ? hasOneWithAllSameTeam : randomTeams[1].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
             }
+
+            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper ||
+                !hasOneWithAllSameTeam)
+                continue;
 
             var oneTeamHasMoreThanHalfPosition = false;
 
@@ -71,8 +106,7 @@ public class Dealer : IDealer
                 }
             }
 
-            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper ||
-                hasMoreThanOneAvoidSameTeam || oneTeamHasMoreThanHalfPosition || !hasOneWithAllSameTeam)
+            if (oneTeamHasMoreThanHalfPosition || !hasOneWithAllSameTeam)
                 continue;
 
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);

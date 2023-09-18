@@ -15,7 +15,7 @@ public class PlayerTableStorageEntity : TableEntity
 
     }
 
-    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, int position, bool avoidSameTeam, bool needToBeAtSameTeam)
+    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, int position, string avoidSameTeam, bool needToBeAtSameTeam)
     {
         PartitionKey = partitionKey;
         RowKey = rowKey;
@@ -38,7 +38,7 @@ public class PlayerTableStorageEntity : TableEntity
 
     public DateTime LastUpdateDate { get; set; }
 
-    public bool AvoidSameTeam { get; set; }
+    public string AvoidSameTeam { get; set; }
 
     public bool NeedToBeAtSameTeam { get; set; }
       
