@@ -20,10 +20,10 @@ public static class RankExtensions
         if (ranks.Length == 0)
             return 0;
 
-        var tenLastRanks = ranks.OrderByDescending(c => c.Date).Take(12).ToList();
+        var tenLastRanks = ranks.OrderByDescending(c => c.Date).Take(10).ToList();
         var count = tenLastRanks.Count;
 
-        if (count >= 12)
+        if (count >= 10)
         {
             tenLastRanks = tenLastRanks.OrderBy(r => r.Score).ToList();
             tenLastRanks.RemoveAt(0);
