@@ -97,7 +97,7 @@ public class Dealer : IDealer
 
             var oneTeamHasMoreThanHalfPosition = false;
 
-            if (numberOfTeams == 2)
+            if (numberOfTeams == 2 || players.Count() > 17)
             {
                 foreach (Position value in Enum.GetValues(typeof(Position)))
                 {
@@ -134,6 +134,11 @@ public class Dealer : IDealer
         var accptableNumber = Math.Ceiling(players.Count(p => p.Position == (int)position) * 0.5);
 
         var oneTeamHasMoreThanHalfPosition = randomTeams[inicialTeam].Count(p => p.Position == (int)position) > accptableNumber;
+
+        if (finalTeam == 1)
+        {
+            oneTeamHasMoreThanHalfPosition = randomTeams[1].Count(p => p.Position == (int)position) > accptableNumber;
+        }
 
         return oneTeamHasMoreThanHalfPosition ?
                                           oneTeamHasMoreThanHalfPosition :
