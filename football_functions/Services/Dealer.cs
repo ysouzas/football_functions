@@ -32,27 +32,6 @@ public class Dealer : IDealer
         }
 
 
-        if (players.Count() == 15)
-        {
-            var updatedPlayersDTO = players.OrderBy(p => p.Score).Where(p => string.IsNullOrEmpty(p.AvoidSameTeam))
-                                           .Select((p, i) => i < 3 ? p with { AvoidSameTeam = "Last" } : p)
-                                           .Where(p => p.AvoidSameTeam == "Last")
-                                           .ToList();
-
-            var newPlayes = new List<PlayerDTO>();
-
-            foreach (var player in players)
-            {
-                var hasNOT = !updatedPlayersDTO.Where(p => p.Id == player.Id).Any();
-
-                if (hasNOT)
-                    updatedPlayersDTO.Add(player);
-            }
-
-
-            players = updatedPlayersDTO;
-        }
-
         for (int i = 0; i < numberOfPossibilities; i++)
         {
             var r = new Random();
