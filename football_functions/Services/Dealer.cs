@@ -136,7 +136,7 @@ public class Dealer : IDealer
 
         var oneTeamHasMoreThanHalfPosition = randomTeams[inicialTeam].Count(p => p.Position == (int)position) > accptableNumber;
 
-        if (finalTeam == 1)
+        if (finalTeam == 2)
         {
             oneTeamHasMoreThanHalfPosition = randomTeams[1].Count(p => p.Position == (int)position) > accptableNumber;
         }
