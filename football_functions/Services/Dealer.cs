@@ -62,7 +62,7 @@ public class Dealer : IDealer
             var hasRandomTeam3MoreThanOneGoalkeeper = false;
 
 
-            var allTags = players.Select(p => p.AvoidSameTeam).Where(s => !string.IsNullOrEmpty(s)).Distinct().ToList();
+            var allTags = players.Select(p => p.AvoidSameTeam).Where(s => !string.IsNullOrEmpty(s)).SelectMany(s => s.Split(".")).Distinct().ToList();
             var hasMoreThanOneAvoidSameTeam = false;
 
             foreach (var tag in allTags)

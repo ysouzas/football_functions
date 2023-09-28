@@ -21,7 +21,6 @@ public static class RankExtensions
             return 0;
 
         var tenLastRanks = ranks.OrderByDescending(c => c.Date).Take(8).ToList();
-        var count = tenLastRanks.Count;
 
         return Math.Round(tenLastRanks.Sum(r => r.Score) / tenLastRanks.Count, 2);
     }
