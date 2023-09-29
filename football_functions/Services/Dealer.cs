@@ -15,7 +15,7 @@ public class Dealer : IDealer
         var inicialTeam = 0;
         var finalTeam = numberOfTeams == 2 ? 1 : 2;
 
-        var numberOfPossibilities = 100000;
+        var numberOfPossibilities = 1000000;
         TeamDTO[] teams = Array.Empty<TeamDTO>();
 
         decimal bet = 10.0M;
