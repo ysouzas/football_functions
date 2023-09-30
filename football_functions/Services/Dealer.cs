@@ -14,6 +14,7 @@ public class Dealer : IDealer
     {
         var inicialTeam = 0;
         var finalTeam = numberOfTeams == 2 ? 1 : 2;
+        var numberOfLast = 2;
 
         var numberOfPossibilities = 1000000;
         TeamDTO[] teams = Array.Empty<TeamDTO>();
@@ -34,24 +35,28 @@ public class Dealer : IDealer
 
         if (players.Count() == 15)
         {
-            var updatedPlayersDTO = players.OrderBy(p => p.Score).Where(p => string.IsNullOrEmpty(p.AvoidSameTeam))
-                                           .Select((p, i) => i < 3 ? p with { AvoidSameTeam = "Last" } : p)
-                                           .Where(p => p.AvoidSameTeam == "Last")
-                                           .ToList();
-
-            var newPlayes = new List<PlayerDTO>();
-
-            foreach (var player in players)
-            {
-                var hasNOT = !updatedPlayersDTO.Where(p => p.Id == player.Id).Any();
-
-                if (hasNOT)
-                    updatedPlayersDTO.Add(player);
-            }
-
-
-            players = updatedPlayersDTO;
+            numberOfLast = 3;
         }
+
+
+        var updatedPlayersDTO = players.OrderBy(p => p.Score).Where(p => string.IsNullOrEmpty(p.AvoidSameTeam))
+                                       .Select((p, i) => i < numberOfLast ? p with { AvoidSameTeam = "Last" } : p)
+                                       .Where(p => p.AvoidSameTeam == "Last")
+                                       .ToList();
+
+        var newPlayes = new List<PlayerDTO>();
+
+        foreach (var player in players)
+        {
+            var hasNOT = !updatedPlayersDTO.Where(p => p.Id == player.Id).Any();
+
+            if (hasNOT)
+                updatedPlayersDTO.Add(player);
+        }
+
+
+        players = updatedPlayersDTO;
+
 
         for (int i = 0; i < numberOfPossibilities; i++)
         {
