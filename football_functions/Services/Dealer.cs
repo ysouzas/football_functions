@@ -16,10 +16,10 @@ public class Dealer : IDealer
         var finalTeam = numberOfTeams == 2 ? 1 : 2;
         var numberOfLast = 2;
 
-        var numberOfPossibilities = 1000000;
+        var numberOfPossibilities = 100000;
         TeamDTO[] teams = Array.Empty<TeamDTO>();
 
-        decimal bet = 10.0M;
+        decimal bet = numberOfTeams == 2 ? 3.0M : 1.0M;
         var totalScore = players.Sum(p => p.Score);
 
         var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
@@ -39,10 +39,24 @@ public class Dealer : IDealer
         }
 
 
-        var updatedPlayersDTO = players.OrderBy(p => p.Score).Where(p => string.IsNullOrEmpty(p.AvoidSameTeam))
-                                       .Select((p, i) => i < numberOfLast ? p with { AvoidSameTeam = "Last" } : p)
-                                       .Where(p => p.AvoidSameTeam == "Last")
-                                       .ToList();
+        var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
+
+        for (int i = 0; i < numberOfLast; i++)
+        {
+            var player = updatedPlayersDTO[i];
+
+            if (string.IsNullOrEmpty(player.AvoidSameTeam))
+            {
+                player = player with { AvoidSameTeam = "Last" };
+            }
+            else
+            {
+                var avoid = player.AvoidSameTeam + ".Last";
+                player = player with { AvoidSameTeam = avoid };
+            }
+            updatedPlayersDTO[i] = player;
+        }
+
 
         var newPlayes = new List<PlayerDTO>();
 
