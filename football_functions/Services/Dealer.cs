@@ -39,59 +39,58 @@ public class Dealer : IDealer
         }
 
 
-        var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
-
-        for (int i = 0; i < numberOfLast; i++)
+        if (players.Sum(p => p.Score) > 100)
         {
-            var player = updatedPlayersDTO[i];
 
-            if (string.IsNullOrEmpty(player.AvoidSameTeam))
+            var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
+
+            for (int i = 0; i < numberOfLast; i++)
             {
-                player = player with { AvoidSameTeam = "Last" };
+                var player = updatedPlayersDTO[i];
+
+                if (string.IsNullOrEmpty(player.AvoidSameTeam))
+                {
+                    player = player with { AvoidSameTeam = "Last" };
+                }
+                else
+                {
+                    var avoid = player.AvoidSameTeam + ".Last";
+                    player = player with { AvoidSameTeam = avoid };
+                }
+                updatedPlayersDTO[i] = player;
             }
-            else
+
+
+            updatedPlayersDTO = updatedPlayersDTO.OrderByDescending(p => p.Score).ToList();
+
+            for (int i = 0; i < numberOfLast; i++)
             {
-                var avoid = player.AvoidSameTeam + ".Last";
-                player = player with { AvoidSameTeam = avoid };
+                var player = updatedPlayersDTO[i];
+
+                if (string.IsNullOrEmpty(player.AvoidSameTeam))
+                {
+                    player = player with { AvoidSameTeam = ".FIRST" };
+                }
+                else
+                {
+                    var avoid = player.AvoidSameTeam + ".FIRST";
+                    player = player with { AvoidSameTeam = avoid };
+                }
+                updatedPlayersDTO[i] = player;
             }
-            updatedPlayersDTO[i] = player;
+
+            var newPlayes = new List<PlayerDTO>();
+
+            foreach (var player in players)
+            {
+                var hasNOT = !updatedPlayersDTO.Where(p => p.Id == player.Id).Any();
+
+                if (hasNOT)
+                    updatedPlayersDTO.Add(player);
+            }
+
+            players = updatedPlayersDTO;
         }
-
-
-        updatedPlayersDTO = updatedPlayersDTO.OrderByDescending(p => p.Score).ToList();
-
-        for (int i = 0; i < numberOfLast; i++)
-        {
-            var player = updatedPlayersDTO[i];
-
-            if (string.IsNullOrEmpty(player.AvoidSameTeam))
-            {
-                player = player with { AvoidSameTeam = ".FIRST" };
-            }
-            else
-            {
-                var avoid = player.AvoidSameTeam + ".FIRST";
-                player = player with { AvoidSameTeam = avoid };
-            }
-            updatedPlayersDTO[i] = player;
-        }
-
-
-
-
-
-
-        var newPlayes = new List<PlayerDTO>();
-
-        foreach (var player in players)
-        {
-            var hasNOT = !updatedPlayersDTO.Where(p => p.Id == player.Id).Any();
-
-            if (hasNOT)
-                updatedPlayersDTO.Add(player);
-        }
-
-        players = updatedPlayersDTO;
 
         for (int i = 0; i < numberOfPossibilities; i++)
         {
