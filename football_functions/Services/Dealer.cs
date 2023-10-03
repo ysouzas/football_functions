@@ -58,6 +58,29 @@ public class Dealer : IDealer
         }
 
 
+        updatedPlayersDTO = updatedPlayersDTO.OrderByDescending(p => p.Score).ToList();
+
+        for (int i = 0; i < numberOfLast; i++)
+        {
+            var player = updatedPlayersDTO[i];
+
+            if (string.IsNullOrEmpty(player.AvoidSameTeam))
+            {
+                player = player with { AvoidSameTeam = ".FIRST" };
+            }
+            else
+            {
+                var avoid = player.AvoidSameTeam + ".FIRST";
+                player = player with { AvoidSameTeam = avoid };
+            }
+            updatedPlayersDTO[i] = player;
+        }
+
+
+
+
+
+
         var newPlayes = new List<PlayerDTO>();
 
         foreach (var player in players)
@@ -68,9 +91,7 @@ public class Dealer : IDealer
                 updatedPlayersDTO.Add(player);
         }
 
-
         players = updatedPlayersDTO;
-
 
         for (int i = 0; i < numberOfPossibilities; i++)
         {
@@ -81,7 +102,7 @@ public class Dealer : IDealer
             var hasRandomTeam3MoreThanOneGoalkeeper = false;
 
 
-            var allTags = players.Select(p => p.AvoidSameTeam).Where(s => !string.IsNullOrEmpty(s)).SelectMany(s => s.Split(".")).Distinct().ToList();
+            var allTags = players.Select(p => p.AvoidSameTeam).Where(s => !string.IsNullOrEmpty(s)).SelectMany(s => s.Split(".")).Where(s => !string.IsNullOrEmpty(s)).Distinct().ToList();
             var hasMoreThanOneAvoidSameTeam = false;
 
             foreach (var tag in allTags)
