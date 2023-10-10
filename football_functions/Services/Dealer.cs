@@ -92,6 +92,8 @@ public class Dealer : IDealer
             players = updatedPlayersDTO;
         }
 
+        var countBet = 0;
+
         for (int i = 0; i < numberOfPossibilities; i++)
         {
             var r = new Random();
@@ -154,13 +156,20 @@ public class Dealer : IDealer
 
             var differenceBetweenTeam2And0 = differenceFromTeam2 - differenceFromTeam0;
 
+
+            if (differenceBetweenTeam2And0 == bet)
+            {
+                countBet++;
+            }
+
             if (differenceBetweenTeam2And0 < bet)
             {
                 bet = differenceBetweenTeam2And0;
                 teams = randomTeams.Select(asa => new TeamDTO(asa.Sum(p => p.Score), asa.OrderByDescending(a => a.Score).ToList())).OrderBy(t => t.Score).ToArray();
+                countBet = 0;
             }
 
-            if (bet == acceptableDifference || bet == 0.00M)
+            if (bet == acceptableDifference || bet == 0.00M || countBet == 20)
             {
                 return teams;
             }
