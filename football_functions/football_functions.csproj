@@ -10,18 +10,6 @@
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Models\" />
-    <None Remove="Configurations\" />
-    <None Remove="Options\" />
-    <None Remove="Configurations\DependencyInjectionConfiguration.json" />
-    <None Remove="Services\" />
-    <None Remove="Services\Interfaces\" />
-    <None Remove="Services\Interfaces\Base\" />
-    <None Remove="DTOs\" />
-    <None Remove="Extensions\" />
-    <None Remove="appsettings.json" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -34,14 +22,6 @@
     <None Update="local.settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Configurations\" />
-    <Folder Include="Options\" />
-    <Folder Include="Services\" />
-    <Folder Include="Services\Interfaces\" />
-    <Folder Include="Services\Interfaces\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="appsettings.json">
