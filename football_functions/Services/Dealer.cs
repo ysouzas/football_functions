@@ -120,6 +120,13 @@ public class Dealer : IDealer
             if (hasMoreThanOneAvoidSameTeam)
                 continue;
 
+            if (players.Count(p => p.NeedToBeAtSameTeam) == players.Count() / 2)
+            {
+                randomTeams = players.OrderBy(p => p.NeedToBeAtSameTeam).Chunk(numberOfPlayers).OrderBy(p => p.Sum(p => p.Score)).ToArray();
+                teams = randomTeams.Select(asa => new TeamDTO(asa.Sum(p => p.Score), asa.OrderByDescending(a => a.Score).ToList())).OrderBy(t => t.Score).ToArray();
+                return teams;
+
+            }
 
             var hasOneWithAllSameTeam = randomTeams[inicialTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
             hasOneWithAllSameTeam = hasOneWithAllSameTeam ? hasOneWithAllSameTeam : randomTeams[finalTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
