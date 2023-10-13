@@ -139,14 +139,9 @@ public class Dealer : IDealer
 
             var oneTeamHasMoreThanHalfPosition = false;
 
-            if (numberOfTeams == 2 || players.Count() > 17)
-            {
-                foreach (Position value in Enum.GetValues(typeof(Position)))
-                {
-                    oneTeamHasMoreThanHalfPosition = HasMoreThanHalfPlayersOfPosition(randomTeams, players, value, inicialTeam, finalTeam);
-                    if (oneTeamHasMoreThanHalfPosition) break;
-                }
-            }
+            oneTeamHasMoreThanHalfPosition = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Goalkeeper, inicialTeam, finalTeam);
+
+            if (oneTeamHasMoreThanHalfPosition) break;
 
             if (oneTeamHasMoreThanHalfPosition || !hasOneWithAllSameTeam)
                 continue;
