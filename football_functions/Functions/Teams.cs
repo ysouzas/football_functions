@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using football_functions.DTOs.Request;
 using football_functions.Models.Enums;
 using football_functions.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -31,20 +31,22 @@ public class Teams
         var playersEntity = await _playerTableStorage.GetAll();
         var playersDTO = playersEntity.Select(p => p.ToPlayerDTO()).OrderByDescending(p => p.Score).ToList();
 
-        var ids = JsonSerializer.Deserialize<List<string>>(req.Body);
+        var getTeams = JsonSerializer.Deserialize<GetTeams>(req.Body);
+
+        var ids = getTeams.Ids;
 
         playersDTO = playersDTO.Where(p => ids.Contains(p.Id)).ToList();
 
         var numberOfTeams = 3;
         var numberOfPlayers = 5;
 
-        if(ids.Count == 20 && !playersDTO.Any(p=> p.Position == (int)Position.Goalkeeper))
+        if (ids.Count == 20 && !playersDTO.Any(p => p.Position == (int)Position.Goalkeeper))
         {
             numberOfTeams = 2;
 
             numberOfPlayers = ids.Count % 2 == 0 ? ids.Count / 2 : ids.Count / 2 + 1;
         }
-        else if(ids.Count > 21)
+        else if (ids.Count > 21)
         {
             numberOfTeams = 2;
 
@@ -69,7 +71,7 @@ public class Teams
             numberOfPlayers = 5;
         }
 
-        var teams = _dealer.SortTeamsRandom(playersDTO, numberOfTeams, numberOfPlayers);
+        var teams = _dealer.SortTeamsRandom(playersDTO, numberOfTeams, numberOfPlayers, getTeams.UsePosition);
         return new OkObjectResult(teams);
 
     }

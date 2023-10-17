@@ -10,7 +10,7 @@ namespace football_functions.Services;
 
 public class Dealer : IDealer
 {
-    public TeamDTO[] SortTeamsRandom(IEnumerable<PlayerDTO> players, int numberOfTeams, int numberOfPlayers)
+    public TeamDTO[] SortTeamsRandom(IEnumerable<PlayerDTO> players, int numberOfTeams, int numberOfPlayers, bool usePosition)
     {
         var inicialTeam = 0;
         var finalTeam = numberOfTeams == 2 ? 1 : 2;
@@ -32,12 +32,10 @@ public class Dealer : IDealer
             finalTeam = 2;
         }
 
-
         if (players.Count() == 15)
         {
             numberOfLast = 3;
         }
-
 
         if (players.Sum(p => p.Score) > 100)
         {
@@ -146,9 +144,14 @@ public class Dealer : IDealer
 
             var oneTeamHasMoreThanHalfPosition = false;
 
-            oneTeamHasMoreThanHalfPosition = HasMoreThanHalfPlayersOfPosition(randomTeams, players, Position.Goalkeeper, inicialTeam, finalTeam);
-
-            if (oneTeamHasMoreThanHalfPosition) break;
+            if (usePosition && (numberOfTeams == 2 || players.Count() > 17))
+            {
+                foreach (Position value in Enum.GetValues(typeof(Position)))
+                {
+                    oneTeamHasMoreThanHalfPosition = HasMoreThanHalfPlayersOfPosition(randomTeams, players, value, inicialTeam, finalTeam);
+                    if (oneTeamHasMoreThanHalfPosition) break;
+                }
+            }
 
             if (oneTeamHasMoreThanHalfPosition || !hasOneWithAllSameTeam)
                 continue;
