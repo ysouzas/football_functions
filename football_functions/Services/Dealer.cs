@@ -37,7 +37,7 @@ public class Dealer : IDealer
             numberOfLast = 3;
         }
 
-        if (players.Sum(p => p.Score) > 100 && players.Count() < 22)
+        if (players.Sum(p => p.Score) > 90 && players.Count() < 22)
         {
 
             var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
