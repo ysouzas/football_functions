@@ -37,59 +37,6 @@ public class Dealer : IDealer
             numberOfLast = 3;
         }
 
-        if (players.Count() < 22)
-        {
-
-            var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
-
-            for (int i = 0; i < numberOfLast; i++)
-            {
-                var player = updatedPlayersDTO[i];
-
-                if (string.IsNullOrEmpty(player.AvoidSameTeam))
-                {
-                    player = player with { AvoidSameTeam = "Last" };
-                }
-                else
-                {
-                    var avoid = player.AvoidSameTeam + ".Last";
-                    player = player with { AvoidSameTeam = avoid };
-                }
-                updatedPlayersDTO[i] = player;
-            }
-
-
-            updatedPlayersDTO = updatedPlayersDTO.OrderByDescending(p => p.Score).ToList();
-
-            for (int i = 0; i < numberOfLast; i++)
-            {
-                var player = updatedPlayersDTO[i];
-
-                if (string.IsNullOrEmpty(player.AvoidSameTeam))
-                {
-                    player = player with { AvoidSameTeam = ".FIRST" };
-                }
-                else
-                {
-                    var avoid = player.AvoidSameTeam + ".FIRST";
-                    player = player with { AvoidSameTeam = avoid };
-                }
-                updatedPlayersDTO[i] = player;
-            }
-
-            var newPlayes = new List<PlayerDTO>();
-
-            foreach (var player in players)
-            {
-                var hasNOT = !updatedPlayersDTO.Where(p => p.Id == player.Id).Any();
-
-                if (hasNOT)
-                    updatedPlayersDTO.Add(player);
-            }
-
-            players = updatedPlayersDTO;
-        }
-
         var countBet = 0;
 
         for (int i = 0; i < numberOfPossibilities; i++)
