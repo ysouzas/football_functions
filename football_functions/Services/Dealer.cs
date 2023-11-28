@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using football_functions.DTOs;
 using football_functions.DTOs.Response;
+using football_functions.Extensions;
 using football_functions.Models.Enums;
 using football_functions.Services.Interfaces;
 
@@ -14,7 +14,6 @@ public class Dealer : IDealer
     {
         var inicialTeam = 0;
         var finalTeam = numberOfTeams == 2 ? 1 : 2;
-        var numberOfLast = 2;
 
         var numberOfPossibilities = 10000000;
         TeamDTO[] teams = Array.Empty<TeamDTO>();
@@ -30,11 +29,6 @@ public class Dealer : IDealer
         {
             inicialTeam = 1;
             finalTeam = 2;
-        }
-
-        if (players.Count() == 15)
-        {
-            numberOfLast = 3;
         }
 
         var countBet = 0;
@@ -64,14 +58,6 @@ public class Dealer : IDealer
 
             if (hasMoreThanOneAvoidSameTeam)
                 continue;
-
-            if (players.Count(p => p.NeedToBeAtSameTeam) == players.Count() / 2)
-            {
-                randomTeams = players.OrderBy(p => p.NeedToBeAtSameTeam).Chunk(numberOfPlayers).OrderBy(p => p.Sum(p => p.Score)).ToArray();
-                teams = randomTeams.Select(asa => new TeamDTO(asa.Sum(p => p.Score), asa.OrderByDescending(a => a.Score).ToList())).OrderBy(t => t.Score).ToArray();
-                return teams;
-
-            }
 
             var hasOneWithAllSameTeam = randomTeams[inicialTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
             hasOneWithAllSameTeam = hasOneWithAllSameTeam ? hasOneWithAllSameTeam : randomTeams[finalTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
@@ -117,7 +103,7 @@ public class Dealer : IDealer
             if (differenceBetweenTeam2And0 < bet)
             {
                 bet = differenceBetweenTeam2And0;
-                teams = randomTeams.Select(asa => new TeamDTO(asa.Sum(p => p.Score), asa.OrderByDescending(a => a.Score).ToList())).OrderBy(t => t.Score).ToArray();
+                teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO()).OrderByDescending(a => a.Score).ToList())).OrderBy(t => t.Score).ToArray();
                 countBet = 0;
             }
 

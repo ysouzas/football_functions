@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text.Json;
-using football_functions.DTOs;
-using football_functions.DTOs.Response;
 using Microsoft.Azure.Cosmos.Table;
 
 namespace football_functions.Models;
@@ -41,19 +37,5 @@ public class PlayerTableStorageEntity : TableEntity
     public string AvoidSameTeam { get; set; }
 
     public bool NeedToBeAtSameTeam { get; set; }
-      
-
-    public PlayerDTO ToPlayerDTO()
-    {
-        return new PlayerDTO(Name, RowKey, ((decimal)Score), Position, AvoidSameTeam, NeedToBeAtSameTeam);
-    }
-
-    public PlayerWithRanksDTO ToPlayerWithRanksDTO()
-    {
-        var ranks = JsonSerializer.Deserialize<RankDTO[]>(Ranks);
-
-        ranks = ranks.Length > 0 ? ranks.OrderByDescending(r => r.Date).ToArray() : Array.Empty<RankDTO>();
-        return new PlayerWithRanksDTO(Name, RowKey, (decimal)Score, ranks);
-    }
 }
 
