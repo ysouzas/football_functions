@@ -21,6 +21,8 @@ public class Dealer : IDealer
         decimal bet = numberOfTeams == 2 ? 3.0M : 1.0M;
         var totalScore = players.Sum(p => p.Score);
 
+        var numberOfLast = players.Count() > 22 ? 2 : 3;
+
         var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
 
         var numberOfSameTeam = players.Count(p => p.NeedToBeAtSameTeam is true);
@@ -32,6 +34,56 @@ public class Dealer : IDealer
         }
 
         var countBet = 0;
+
+        var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
+
+        for (int i = 0; i < numberOfLast; i++)
+        {
+            var player = updatedPlayersDTO[i];
+
+            if (string.IsNullOrEmpty(player.AvoidSameTeam))
+            {
+                player = player with { AvoidSameTeam = "Last" };
+            }
+            else
+            {
+                var avoid = player.AvoidSameTeam + ".Last";
+                player = player with { AvoidSameTeam = avoid };
+            }
+            updatedPlayersDTO[i] = player;
+        }
+
+
+        updatedPlayersDTO = updatedPlayersDTO.OrderByDescending(p => p.Score).ToList();
+
+        for (int i = 0; i < numberOfLast; i++)
+        {
+            var player = updatedPlayersDTO[i];
+
+            if (string.IsNullOrEmpty(player.AvoidSameTeam))
+            {
+                player = player with { AvoidSameTeam = ".FIRST" };
+            }
+            else
+            {
+                var avoid = player.AvoidSameTeam + ".FIRST";
+                player = player with { AvoidSameTeam = avoid };
+            }
+            updatedPlayersDTO[i] = player;
+        }
+
+        var newPlayes = new List<PlayerDTO>();
+
+        foreach (var player in players)
+        {
+            var hasNOT = !updatedPlayersDTO.Where(p => p.Id == player.Id).Any();
+
+            if (hasNOT)
+                updatedPlayersDTO.Add(player);
+        }
+
+        players = updatedPlayersDTO;
+
 
         for (int i = 0; i < numberOfPossibilities; i++)
         {
