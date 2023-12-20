@@ -21,13 +21,13 @@ public class Dealer : IDealer
         decimal bet = numberOfTeams == 2 ? 3.0M : 1.0M;
         var totalScore = players.Sum(p => p.Score);
 
-        var numberOfLast = players.Count() >= 22 || players.Count() <= 12 ? 2 : 3;
+        var numberOfLast = numberOfTeams;
 
         var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
 
         var numberOfSameTeam = players.Count(p => p.NeedToBeAtSameTeam is true);
 
-        if (players.Count() < 12 || players.Count() == 14)
+        if (numberOfTeams > 2 || numberOfPlayers == 14)
         {
             inicialTeam = 1;
             finalTeam = 2;
