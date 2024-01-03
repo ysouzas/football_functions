@@ -155,8 +155,8 @@ public class Dealer : IDealer
                 bet = differenceBetweenTeam2And0;
                 teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO())
                                    .OrderByDescending(a => a.Score).ToList()))
-                                   .OrderByDescending(t => t.Score)
-                                   .ThenByDescending(t => t.Players.Count)
+                                   .OrderByDescending(t => t.Players.Count)
+                                   .ThenByDescending(t => t.Score)
                                    .ToArray();
                 countBet = 0;
             }
