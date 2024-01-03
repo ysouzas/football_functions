@@ -20,7 +20,7 @@ public class Dealer : IDealer
 
         decimal bet = numberOfTeams == 2 ? 3.0M : 1.0M;
 
-        if(players.Count() < 14)
+        if(players.Count() <= 14)
             bet = 7.0M;
 
         var totalScore = players.Sum(p => p.Score);
