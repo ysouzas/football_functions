@@ -18,7 +18,11 @@ public class Dealer : IDealer
         var numberOfPossibilities = 10000000;
         TeamDTO[] teams = Array.Empty<TeamDTO>();
 
-        decimal bet = numberOfTeams == 2 ? 3.0M : 10.0M;
+        decimal bet = numberOfTeams == 2 ? 3.0M : 1.0M;
+
+        if(players.Count() < 14)
+            bet = 7.0M;
+
         var totalScore = players.Sum(p => p.Score);
 
         var numberOfLast = numberOfTeams;
@@ -149,7 +153,11 @@ public class Dealer : IDealer
             if (differenceBetweenTeam2And0 < bet)
             {
                 bet = differenceBetweenTeam2And0;
-                teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO()).OrderBy(a => a.Score).ToList())).OrderBy(t => t.Score).ToArray();
+                teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO())
+                                   .OrderByDescending(a => a.Score).ToList()))
+                                   .OrderByDescending(t => t.Score)
+                                   .ThenByDescending(t => t.Players.Count)
+                                   .ToArray();
                 countBet = 0;
             }
 
