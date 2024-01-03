@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using football_functions.DTOs.Response;
@@ -26,12 +26,6 @@ public class Dealer : IDealer
         var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
 
         var numberOfSameTeam = players.Count(p => p.NeedToBeAtSameTeam is true);
-
-        if (numberOfTeams > 2 || numberOfPlayers == 14)
-        {
-            inicialTeam = 1;
-            finalTeam = 2;
-        }
 
         var countBet = 0;
 
@@ -155,7 +149,7 @@ public class Dealer : IDealer
             if (differenceBetweenTeam2And0 < bet)
             {
                 bet = differenceBetweenTeam2And0;
-                teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO()).OrderByDescending(a => a.Score).ToList())).OrderBy(t => t.Score).ToArray();
+                teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO()).OrderBy(a => a.Score).ToList())).OrderBy(t => t.Score).ToArray();
                 countBet = 0;
             }
 
