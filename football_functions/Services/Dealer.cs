@@ -127,7 +127,7 @@ public class Dealer : IDealer
 
             var oneTeamHasMoreThanHalfPosition = false;
 
-            if (usePosition && (numberOfTeams == 2 || players.Count() > 17))
+            if (usePosition)
             {
                 foreach (Position value in Enum.GetValues(typeof(Position)))
                 {
