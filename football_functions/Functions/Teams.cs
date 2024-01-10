@@ -61,9 +61,9 @@ public class Teams
         }
         else if (ids.Count == 12)
         {
-            numberOfTeams = 3;
+            numberOfTeams = 2;
 
-            numberOfPlayers = 4;
+            numberOfPlayers = 6;
         }
         else if (ids.Count == 14)
         {
