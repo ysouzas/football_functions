@@ -20,7 +20,7 @@ public class Dealer : IDealer
 
         decimal bet = numberOfTeams == 2 ? 20.0M : 10.0M;
 
-        if(players.Count() < 14)
+        if (players.Count() < 14)
             bet = 15.0M;
 
         var totalScore = players.Sum(p => p.Score);
@@ -81,7 +81,6 @@ public class Dealer : IDealer
         }
 
         players = updatedPlayersDTO;
-
 
         for (int i = 0; i < numberOfPossibilities; i++)
         {
@@ -153,11 +152,24 @@ public class Dealer : IDealer
             if (differenceBetweenTeam2And0 < bet)
             {
                 bet = differenceBetweenTeam2And0;
-                teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO())
-                                   .OrderByDescending(a => a.Score).ToList()))
-                                   .OrderByDescending(t => t.Players.Count)
-                                   .ThenByDescending(t => t.Score)
-                                   .ToArray();
+
+                if (players.Count() % numberOfPlayers == 0)
+                {
+                    teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO())
+                                       .OrderByDescending(a => a.Score).ToList()))
+                                       .OrderByDescending(t => t.Players.Count)
+                                       .ThenBy(t => t.Score)
+                                       .ToArray();
+                }
+                else
+                {
+                    teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO())
+                                       .OrderByDescending(a => a.Score).ToList()))
+                                       .OrderByDescending(t => t.Players.Count)
+                                       .ThenByDescending(t => t.Score)
+                                       .ToArray();
+                }
+
                 countBet = 0;
             }
 
