@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using football_functions.DTOs.Request;
 using football_functions.Extensions;
@@ -36,7 +37,7 @@ public class AddPlayer
             player.Name,
             "[]",
             999,
-            "",
+            Regex.Replace(player.Name.ToUpper(), @"\s+", ""),
             false
             );
 
