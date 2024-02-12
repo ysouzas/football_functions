@@ -11,7 +11,7 @@ public class PlayerTableStorageEntity : TableEntity
 
     }
 
-    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, int position, string avoidSameTeam, bool needToBeAtSameTeam)
+    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, int position, string avoidSameTeam, string needToBeAtSameTeam)
     {
         PartitionKey = partitionKey;
         RowKey = rowKey;
@@ -36,6 +36,6 @@ public class PlayerTableStorageEntity : TableEntity
 
     public string AvoidSameTeam { get; set; }
 
-    public bool NeedToBeAtSameTeam { get; set; }
+    public string NeedToBeAtSameTeam { get; set; }
 }
 

@@ -29,8 +29,6 @@ public class Dealer : IDealer
 
         var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
 
-        var numberOfSameTeam = players.Count(p => p.NeedToBeAtSameTeam is true);
-
         var countBet = 0;
 
 
@@ -102,17 +100,37 @@ public class Dealer : IDealer
                 foreach (var team in randomTeams)
                 {
                     hasMoreThanOneAvoidSameTeam = team.Where(p => !string.IsNullOrEmpty(p.AvoidSameTeam) && p.AvoidSameTeam.Contains(tag)).Count() >= 2;
-
-                    if (hasMoreThanOneAvoidSameTeam) break;
                 }
+
                 if (hasMoreThanOneAvoidSameTeam) break;
             }
+
 
             if (hasMoreThanOneAvoidSameTeam)
                 continue;
 
-            var hasOneWithAllSameTeam = randomTeams[inicialTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
-            hasOneWithAllSameTeam = hasOneWithAllSameTeam ? hasOneWithAllSameTeam : randomTeams[finalTeam].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
+
+            var sameTeamTags = players.Where(p => !string.IsNullOrEmpty(p.NeedToBeAtSameTeam)).Select(p => p.NeedToBeAtSameTeam).GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count());
+
+
+            var dic = players.Where(p => !string.IsNullOrEmpty(p.NeedToBeAtSameTeam)).Select(p => p.NeedToBeAtSameTeam).GroupBy(x => x).ToDictionary(g => g.Key, g => false);
+
+            foreach (var sameTeamTag in sameTeamTags)
+            {
+                foreach (var team in randomTeams)
+                {
+                    hasMoreThanOneAvoidSameTeam = team.Count(p => p.NeedToBeAtSameTeam == sameTeamTag.Key) == sameTeamTag.Value;
+
+                    if (hasMoreThanOneAvoidSameTeam)
+                    {
+                        dic[sameTeamTag.Key] = true;
+                    };
+
+                }
+            }
+
+            if (dic.Values.Contains(false))
+                continue;
 
             var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
             var hasRandomTeam2MoreThanOneGoalkeeper = randomTeams[finalTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
@@ -120,11 +138,9 @@ public class Dealer : IDealer
             if (numberOfTeams > 2)
             {
                 hasRandomTeam3MoreThanOneGoalkeeper = randomTeams[1].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
-                hasOneWithAllSameTeam = hasOneWithAllSameTeam ? hasOneWithAllSameTeam : randomTeams[1].Count(p => p.NeedToBeAtSameTeam) == numberOfSameTeam;
             }
 
-            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper ||
-                !hasOneWithAllSameTeam)
+            if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper)
                 continue;
 
             var oneTeamHasMoreThanHalfPosition = false;
@@ -138,7 +154,7 @@ public class Dealer : IDealer
                 }
             }
 
-            if (oneTeamHasMoreThanHalfPosition || !hasOneWithAllSameTeam)
+            if (oneTeamHasMoreThanHalfPosition)
                 continue;
 
             var differenceFromTeam0 = randomTeams[inicialTeam].Sum(p => p.Score);

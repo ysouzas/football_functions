@@ -38,7 +38,7 @@ public class AddPlayer
             "[]",
             999,
             Regex.Replace(player.Name.ToUpper(), @"\s+", ""),
-            false
+            ""
             );
 
         var playersEntity = await _playerTableStorage.InsertOrReplace(entity);
