@@ -34,7 +34,7 @@ public class Dealer : IDealer
         var countBet = 0;
 
 
-        if (players.Sum(p => p.Score) >= 80)
+        if (players.Sum(p => p.Score) >= 90)
         {
             var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
 
