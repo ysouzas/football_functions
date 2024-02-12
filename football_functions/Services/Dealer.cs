@@ -29,6 +29,7 @@ public class Dealer : IDealer
 
         var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
 
+
         var countBet = 0;
 
 
@@ -100,18 +101,16 @@ public class Dealer : IDealer
                 foreach (var team in randomTeams)
                 {
                     hasMoreThanOneAvoidSameTeam = team.Where(p => !string.IsNullOrEmpty(p.AvoidSameTeam) && p.AvoidSameTeam.Contains(tag)).Count() >= 2;
-                }
 
+                    if (hasMoreThanOneAvoidSameTeam) break;
+                }
                 if (hasMoreThanOneAvoidSameTeam) break;
             }
-
 
             if (hasMoreThanOneAvoidSameTeam)
                 continue;
 
-
             var sameTeamTags = players.Where(p => !string.IsNullOrEmpty(p.NeedToBeAtSameTeam)).Select(p => p.NeedToBeAtSameTeam).GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count());
-
 
             var dic = players.Where(p => !string.IsNullOrEmpty(p.NeedToBeAtSameTeam)).Select(p => p.NeedToBeAtSameTeam).GroupBy(x => x).ToDictionary(g => g.Key, g => false);
 
@@ -129,7 +128,7 @@ public class Dealer : IDealer
                 }
             }
 
-            if (dic.Values.Contains(false))
+            if (dic.ContainsValue(false))
                 continue;
 
             var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
