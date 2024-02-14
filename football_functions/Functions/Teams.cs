@@ -65,11 +65,17 @@ public class Teams
 
             numberOfPlayers = 6;
         }
-        else if (ids.Count == 12)
+        else if (ids.Count == 12 && playersDTO.Exists(p => p.Position == (int)Position.Goalkeeper))
         {
             numberOfTeams = 2;
 
             numberOfPlayers = 6;
+        }
+        else if (ids.Count == 12)
+        {
+            numberOfTeams = 3;
+
+            numberOfPlayers = 4;
         }
         else if (ids.Count == 14)
         {
