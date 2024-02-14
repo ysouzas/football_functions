@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using football_functions.DTOs.Response;
 using football_functions.Extensions;
-using football_functions.Models.Enums;
 using football_functions.Services.Interfaces;
 
 namespace football_functions.Services;
@@ -131,12 +130,12 @@ public class Dealer : IDealer
             if (dic.ContainsValue(false))
                 continue;
 
-            var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
-            var hasRandomTeam2MoreThanOneGoalkeeper = randomTeams[finalTeam].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
+            var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Position == 1) > 1;
+            var hasRandomTeam2MoreThanOneGoalkeeper = randomTeams[finalTeam].Count(p => p.Position == 1) > 1;
 
             if (numberOfTeams > 2)
             {
-                hasRandomTeam3MoreThanOneGoalkeeper = randomTeams[1].Count(p => p.Position == (int)Position.Goalkeeper) > 1;
+                hasRandomTeam3MoreThanOneGoalkeeper = randomTeams[1].Count(p => p.Position == 1) > 1;
             }
 
             if (hasRandomTeam3MoreThanOneGoalkeeper || hasRandomTeam1MoreThanOneGoalkeeper || hasRandomTeam2MoreThanOneGoalkeeper)
@@ -146,7 +145,9 @@ public class Dealer : IDealer
 
             if (usePosition)
             {
-                foreach (Position value in Enum.GetValues(typeof(Position)))
+                var positions = players.Select(p => p.Position).Distinct();
+
+                foreach (var value in positions)
                 {
                     oneTeamHasMoreThanHalfPosition = HasMoreThanHalfPlayersOfPosition(randomTeams, players, value, inicialTeam, finalTeam);
                     if (oneTeamHasMoreThanHalfPosition) break;
@@ -200,7 +201,7 @@ public class Dealer : IDealer
         return teams;
     }
 
-    private bool HasMoreThanHalfPlayersOfPosition(PlayerDTO[][] randomTeams, IEnumerable<PlayerDTO> players, Position position, int inicialTeam, int finalTeam)
+    private bool HasMoreThanHalfPlayersOfPosition(PlayerDTO[][] randomTeams, IEnumerable<PlayerDTO> players, int position, int inicialTeam, int finalTeam)
     {
         var accptableNumber = Math.Ceiling(players.Count(p => p.Position == (int)position) * 0.5);
 

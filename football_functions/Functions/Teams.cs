@@ -3,7 +3,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using football_functions.DTOs.Request;
 using football_functions.Extensions;
-using football_functions.Models.Enums;
 using football_functions.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +40,7 @@ public class Teams
         var numberOfTeams = 3;
         var numberOfPlayers = 5;
 
-        if (ids.Count == 20 && !playersDTO.Any(p => p.Position == (int)Position.Goalkeeper))
+        if (ids.Count == 20 && !playersDTO.Any(p => p.Position == 1))
         {
             numberOfTeams = 2;
 
@@ -65,7 +64,7 @@ public class Teams
 
             numberOfPlayers = 6;
         }
-        else if (ids.Count == 12 && playersDTO.Exists(p => p.Position == (int)Position.Goalkeeper))
+        else if (ids.Count == 12 && playersDTO.Exists(p => p.Position == 1))
         {
             numberOfTeams = 2;
 
