@@ -11,7 +11,7 @@ public class PlayerTableStorageEntity : TableEntity
 
     }
 
-    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, int position, string avoidSameTeam, string needToBeAtSameTeam)
+    public PlayerTableStorageEntity(string partitionKey, string rowKey, double score, string name, string ranks, int position, string avoidSameTeam, string needToBeAtSameTeam, bool tShirtPBN)
     {
         PartitionKey = partitionKey;
         RowKey = rowKey;
@@ -22,6 +22,7 @@ public class PlayerTableStorageEntity : TableEntity
         Position = position;
         AvoidSameTeam = avoidSameTeam;
         NeedToBeAtSameTeam = needToBeAtSameTeam;
+        TShirtPBN = tShirtPBN;
     }
 
     public double Score { get; set; } = 0;
@@ -37,5 +38,8 @@ public class PlayerTableStorageEntity : TableEntity
     public string AvoidSameTeam { get; set; }
 
     public string NeedToBeAtSameTeam { get; set; }
+
+    public bool TShirtPBN { get; set; }
+
 }
 

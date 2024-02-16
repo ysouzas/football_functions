@@ -38,7 +38,8 @@ public class AddPlayer
             "[]",
             999,
             Regex.Replace(player.Name.ToUpper(), @"\s+", ""),
-            ""
+            "",
+            player.TShirtPBN
             );
 
         var playersEntity = await _playerTableStorage.InsertOrReplace(entity);

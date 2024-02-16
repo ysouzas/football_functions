@@ -127,7 +127,7 @@ public class Dealer : IDealer
                 }
             }
 
-            if (dic.ContainsValue(false))
+            if (dic.ContainsValue(false) && players.Count() > 15)
                 continue;
 
             var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Position == 1) > 1;
@@ -176,16 +176,12 @@ public class Dealer : IDealer
                 {
                     teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO())
                                        .OrderByDescending(a => a.Score).ToList()))
-                                       .OrderByDescending(t => t.Players.Count)
-                                       .ThenBy(t => t.Score)
                                        .ToArray();
                 }
                 else
                 {
                     teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO())
                                        .OrderByDescending(a => a.Score).ToList()))
-                                       .OrderByDescending(t => t.Players.Count)
-                                       .ThenByDescending(t => t.Score)
                                        .ToArray();
                 }
 
@@ -194,11 +190,34 @@ public class Dealer : IDealer
 
             if (bet == acceptableDifference || bet == 0.00M || countBet == 20)
             {
-                return teams;
+                return OrderTeams(numberOfTeams, teams);
             }
         }
 
-        return teams;
+        return OrderTeams(numberOfTeams, teams);
+
+
+    }
+
+    private static TeamDTO[] OrderTeams(int numberOfTeams, TeamDTO[] teams)
+    {
+        var orderedTeams = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN == true)).ToArray();
+
+        var teamsByTshirt = new List<TeamDTO>();
+
+        if (numberOfTeams == 2)
+        {
+            teamsByTshirt.Add(orderedTeams[1]);
+            teamsByTshirt.Add(orderedTeams[0]);
+        }
+        else
+        {
+            teamsByTshirt.Add(orderedTeams[1]);
+            teamsByTshirt.Add(orderedTeams[0]);
+            teamsByTshirt.Add(orderedTeams[2]);
+        }
+
+        return teamsByTshirt.ToArray();
     }
 
     private bool HasMoreThanHalfPlayersOfPosition(PlayerDTO[][] randomTeams, IEnumerable<PlayerDTO> players, int position, int inicialTeam, int finalTeam)
