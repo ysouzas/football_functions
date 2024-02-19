@@ -127,7 +127,7 @@ public class Dealer : IDealer
                 }
             }
 
-            if (dic.ContainsValue(false) && players.Count() > 15)
+            if (dic.ContainsValue(false))
                 continue;
 
             var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Position == 1) > 1;
