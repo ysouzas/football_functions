@@ -11,7 +11,7 @@ public static class MappingExtentions
 {
     public static PlayerDTO ToPlayerDTO(this PlayerTableStorageEntity me)
     {
-        return new PlayerDTO(me.Name, me.RowKey, ((decimal)me.Score), me.Position, me.AvoidSameTeam, me.NeedToBeAtSameTeam, me.TShirtPBN);
+        return new PlayerDTO(me.Name, me.RowKey, ((decimal)me.Score), me.Position, me.AvoidSameTeam, me.NeedToBeAtSameTeam, me.TshirtPBN, me.TshirtGreen);
     }
 
     public static PlayerWithRanksDTO ToPlayerWithRanksDTO(this PlayerTableStorageEntity me)
@@ -25,6 +25,6 @@ public static class MappingExtentions
 
     public static PlayerInTeamDTO ToPlayerInTeamDTO(this PlayerDTO me)
     {
-        return new PlayerInTeamDTO(me.Name, me.Id, (decimal)me.Score, me.Position, me.TshirtPBN);
+        return new PlayerInTeamDTO(me.Name, me.Id, (decimal)me.Score, me.Position, me.TshirtPBN, me.TshirtGreen);
     }
 }

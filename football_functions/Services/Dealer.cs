@@ -14,7 +14,7 @@ public class Dealer : IDealer
         var inicialTeam = 0;
         var finalTeam = numberOfTeams == 2 ? 1 : 2;
 
-        var numberOfPossibilities = 1000000;
+        var numberOfPossibilities = 100000;
         TeamDTO[] teams = Array.Empty<TeamDTO>();
 
         decimal bet = numberOfTeams == 2 ? 20.0M : 10.0M;
@@ -188,7 +188,7 @@ public class Dealer : IDealer
                 countBet = 0;
             }
 
-            if (bet == acceptableDifference || bet == 0.00M || countBet == 20)
+            if (bet == acceptableDifference || bet == 0.00M || countBet == 15)
             {
                 return OrderTeams(numberOfTeams, teams);
             }
@@ -201,7 +201,7 @@ public class Dealer : IDealer
 
     private static TeamDTO[] OrderTeams(int numberOfTeams, TeamDTO[] teams)
     {
-        var orderedTeams = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN == true)).ToArray();
+        var orderedTeams = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN == true)).ToList();
 
         var teamsByTshirt = new List<TeamDTO>();
 
@@ -212,9 +212,16 @@ public class Dealer : IDealer
         }
         else
         {
-            teamsByTshirt.Add(orderedTeams[1]);
+            var TshirPBN = orderedTeams[0];
+            orderedTeams.RemoveAt(0);
+            orderedTeams = orderedTeams.OrderByDescending(t => t.Players.Count(p => p.TshirtGreen == true)).ToList();
+            var TshirGreen = orderedTeams.First();
+            orderedTeams.RemoveAt(0);
+
+            teamsByTshirt.Add(TshirGreen);
+            teamsByTshirt.Add(TshirPBN);
             teamsByTshirt.Add(orderedTeams[0]);
-            teamsByTshirt.Add(orderedTeams[2]);
+
         }
 
         return teamsByTshirt.ToArray();
