@@ -39,7 +39,7 @@ public class AddPlayer
             999,
             Regex.Replace(player.Name.ToUpper(), @"\s+", ""),
             "",
-            player.TshirtGreen,
+            player.TshirtPBN,
             player.TshirtGreen
             );
 

@@ -14,7 +14,7 @@ public class Dealer : IDealer
         var inicialTeam = 0;
         var finalTeam = numberOfTeams == 2 ? 1 : 2;
 
-        var numberOfPossibilities = 100000;
+        var numberOfPossibilities = 1000000;
         TeamDTO[] teams = Array.Empty<TeamDTO>();
 
         decimal bet = numberOfTeams == 2 ? 20.0M : 10.0M;
@@ -32,7 +32,7 @@ public class Dealer : IDealer
         var countBet = 0;
 
 
-        if (players.Sum(p => p.Score) >= 90)
+        if (players.Sum(p => p.Score) >= 90 && players.Count() <= 15)
         {
             var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
 
