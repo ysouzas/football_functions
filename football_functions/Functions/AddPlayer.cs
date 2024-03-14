@@ -37,7 +37,7 @@ public class AddPlayer
             player.Name,
             "[]",
             999,
-            Regex.Replace(player.Name.ToUpper(), @"\s+", ""),
+            Regex.Replace(player.Name.ToUpperInvariant(), @"[^0-9a-zA-Z\._]", string.Empty),
             "",
             player.TshirtPBN,
             player.TshirtGreen
