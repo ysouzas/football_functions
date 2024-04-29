@@ -34,7 +34,7 @@ public class Dealer : IDealer
         var countBet = 0;
 
 
-        if (!config.AvoidWorstPlayersSameTeam)
+        if (config.AvoidWorstPlayersSameTeam)
         {
             var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
 
