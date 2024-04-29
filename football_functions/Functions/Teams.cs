@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using football_functions.DTOs.Request;
 using football_functions.Extensions;
+using football_functions.Models;
 using football_functions.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,13 @@ public class Teams
 {
     private readonly IPlayerTableStorage _playerTableStorage;
     private readonly IDealer _dealer;
+    private readonly IConfigTableStorage _configTableStorage;
 
-    public Teams(IPlayerTableStorage playerTableStorage, IDealer dealer)
+    public Teams(IPlayerTableStorage playerTableStorage, IDealer dealer, IConfigTableStorage configTableStorage)
     {
         _playerTableStorage = playerTableStorage;
         _dealer = dealer;
+        _configTableStorage = configTableStorage;
     }
 
     [FunctionName("Teams")]
@@ -89,7 +92,12 @@ public class Teams
             numberOfPlayers = 5;
         }
 
-        var teams = _dealer.SortTeamsRandom(playersDTO, numberOfTeams, numberOfPlayers, getTeams.UsePosition);
+        var configTableStorageEntity = await _configTableStorage.GetFirst();
+
+        var configs = JsonSerializer.Deserialize<Configs>(configTableStorageEntity.Configs);
+
+
+        var teams = _dealer.SortTeamsRandom(playersDTO, numberOfTeams, numberOfPlayers, getTeams.UsePosition, configs);
         return new OkObjectResult(teams);
 
     }

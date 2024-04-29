@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using football_functions.DTOs.Response;
 using football_functions.Extensions;
+using football_functions.Models;
 using football_functions.Services.Interfaces;
 
 namespace football_functions.Services;
 
 public class Dealer : IDealer
 {
-    public TeamDTO[] SortTeamsRandom(IEnumerable<PlayerDTO> players, int numberOfTeams, int numberOfPlayers, bool usePosition)
+    public TeamDTO[] SortTeamsRandom(IEnumerable<PlayerDTO> players, int numberOfTeams, int numberOfPlayers, bool usePosition, Configs config)
     {
         var inicialTeam = 0;
         var finalTeam = numberOfTeams == 2 ? 1 : 2;
@@ -33,7 +34,7 @@ public class Dealer : IDealer
         var countBet = 0;
 
 
-        if (players.Sum(p => p.Score) >= 90 && players.Count() <= 15)
+        if (!config.AvoidWorstPlayersSameTeam)
         {
             var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
 

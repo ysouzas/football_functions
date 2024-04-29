@@ -11,6 +11,7 @@ public static class DependencyInjectionConfiguration
     {
         services.AddScoped<IDealer, Dealer>();
         services.AddScoped<IPlayerTableStorage, PlayerTableStorage>();
+        services.AddScoped<IConfigTableStorage, ConfigTableStorage>();
         return services;
     }
 }
