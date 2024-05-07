@@ -27,4 +27,9 @@ public static class MappingExtentions
     {
         return new PlayerInTeamDTO(me.Name, me.Id, (decimal)me.Score, me.Position, me.TshirtPBN, me.TshirtGreen);
     }
+
+    public static PlayerPositionDTO ToPlayerPositionDTO(this PlayerTableStorageEntity me)
+    {
+        return new PlayerPositionDTO(me.Name, me.RowKey, me.Position);
+    }
 }
