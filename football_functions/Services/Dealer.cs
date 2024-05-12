@@ -16,7 +16,7 @@ public class Dealer : IDealer
         var finalTeam = numberOfTeams == 2 ? 1 : 2;
 
         var numberOfPossibilities = 1000000;
-       
+
         TeamDTO[] teams = Array.Empty<TeamDTO>();
 
         decimal bet = numberOfTeams == 2 ? 20.0M : 10.0M;
@@ -30,80 +30,38 @@ public class Dealer : IDealer
 
         var acceptableDifference = (totalScore % 3) == 0 ? 0.0M : 0.01M;
 
-
         var countBet = 0;
 
-
-        if (config.AvoidWorstPlayersSameTeam)
-        {
-            var updatedPlayersDTO = players.OrderBy(p => p.Score).ToList();
-
-            for (int i = 0; i < numberOfLast; i++)
-            {
-                var player = updatedPlayersDTO[i];
-
-                if (string.IsNullOrEmpty(player.AvoidSameTeam))
-                {
-                    player = player with { AvoidSameTeam = "Last" };
-                }
-                else
-                {
-                    var avoid = player.AvoidSameTeam + ".Last";
-                    player = player with { AvoidSameTeam = avoid };
-                }
-                updatedPlayersDTO[i] = player;
-            }
-
-            updatedPlayersDTO = updatedPlayersDTO.OrderByDescending(p => p.Score).ToList();
-
-            for (int i = 0; i < numberOfLast; i++)
-            {
-                var player = updatedPlayersDTO[i];
-
-                if (string.IsNullOrEmpty(player.AvoidSameTeam))
-                {
-                    player = player with { AvoidSameTeam = ".FIRST" };
-                }
-                else
-                {
-                    var avoid = player.AvoidSameTeam + ".FIRST";
-                    player = player with { AvoidSameTeam = avoid };
-                }
-                updatedPlayersDTO[i] = player;
-            }
-
-            var newPlayes = new List<PlayerDTO>();
-
-            foreach (var player in players)
-            {
-                var hasNOT = !updatedPlayersDTO.Where(p => p.Id == player.Id).Any();
-
-                if (hasNOT)
-                    updatedPlayersDTO.Add(player);
-            }
-
-            players = updatedPlayersDTO;
-        }
+        players = GetPlayersWithAvoid(players, players.OrderBy(p => p.Score).ToList(), config.AvoidWorstPlayersSameTeam, numberOfLast, "LAST");
+        players = GetPlayersWithAvoid(players, players.OrderByDescending(p => p.Score).ToList(), config.AvoidBestPlayersSameTeam, numberOfLast, "FIRST");
 
         for (int i = 0; i < numberOfPossibilities; i++)
         {
             var r = new Random();
 
-            var randomTeams = players.OrderBy(i => r.Next()).Chunk(numberOfPlayers).OrderBy(p => p.Sum(p => p.Score)).ToArray();
 
-            var hasRandomTeam3MoreThanOneGoalkeeper = false;
+            var randomTeams = players.OrderBy(i => r.Next())
+                                     .Chunk(numberOfPlayers)
+                                     .OrderBy(p => p.Sum(p => p.Score))
+                                     .ToArray();
 
 
-            var allTags = players.Select(p => p.AvoidSameTeam).Where(s => !string.IsNullOrEmpty(s)).SelectMany(s => s.Split(".")).Where(s => !string.IsNullOrEmpty(s)).Distinct().ToList();
+            var allTags = players.SelectMany(p => p.AvoidSameTeam?.Split('.') ?? Enumerable.Empty<string>())
+                                 .Where(s => !string.IsNullOrEmpty(s))
+                                 .Distinct()
+                                 .ToList();
+
             var hasMoreThanOneAvoidSameTeam = false;
 
             foreach (var tag in allTags)
             {
                 foreach (var team in randomTeams)
                 {
-                    hasMoreThanOneAvoidSameTeam = team.Where(p => !string.IsNullOrEmpty(p.AvoidSameTeam) && p.AvoidSameTeam.Contains(tag)).Count() >= 2;
-
-                    if (hasMoreThanOneAvoidSameTeam) break;
+                    if (team.Count(p => !string.IsNullOrEmpty(p.AvoidSameTeam) && p.AvoidSameTeam.Contains(tag)) >= 2)
+                    {
+                        hasMoreThanOneAvoidSameTeam = true;
+                        break;
+                    }
                 }
                 if (hasMoreThanOneAvoidSameTeam) break;
             }
@@ -111,29 +69,31 @@ public class Dealer : IDealer
             if (hasMoreThanOneAvoidSameTeam)
                 continue;
 
-            var sameTeamTags = players.Where(p => !string.IsNullOrEmpty(p.NeedToBeAtSameTeam)).Select(p => p.NeedToBeAtSameTeam).GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count());
 
-            var dic = players.Where(p => !string.IsNullOrEmpty(p.NeedToBeAtSameTeam)).Select(p => p.NeedToBeAtSameTeam).GroupBy(x => x).ToDictionary(g => g.Key, g => false);
+            var sameTeamTags = players.Where(p => !string.IsNullOrEmpty(p.NeedToBeAtSameTeam))
+                                      .GroupBy(p => p.NeedToBeAtSameTeam)
+                                      .ToDictionary(g => g.Key, g => g.Count());
+
+            var dic = sameTeamTags.Keys.ToDictionary(k => k, _ => false);
 
             foreach (var sameTeamTag in sameTeamTags)
             {
                 foreach (var team in randomTeams)
                 {
-                    hasMoreThanOneAvoidSameTeam = team.Count(p => p.NeedToBeAtSameTeam == sameTeamTag.Key) == sameTeamTag.Value;
-
-                    if (hasMoreThanOneAvoidSameTeam)
+                    if (team.Count(p => p.NeedToBeAtSameTeam == sameTeamTag.Key) == sameTeamTag.Value)
                     {
                         dic[sameTeamTag.Key] = true;
-                    };
-
+                    }
                 }
             }
 
             if (dic.ContainsValue(false))
                 continue;
 
+
             var hasRandomTeam1MoreThanOneGoalkeeper = randomTeams[inicialTeam].Count(p => p.Position == 1) > 1;
             var hasRandomTeam2MoreThanOneGoalkeeper = randomTeams[finalTeam].Count(p => p.Position == 1) > 1;
+            var hasRandomTeam3MoreThanOneGoalkeeper = false;
 
             if (numberOfTeams > 2)
             {
@@ -174,21 +134,12 @@ public class Dealer : IDealer
             {
                 bet = differenceBetweenTeam2And0;
 
-                if (players.Count() % numberOfPlayers == 0)
-                {
-                    teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO())
-                                       .OrderByDescending(a => a.Score).ToList()))
-                                       .ToArray();
-                }
-                else
-                {
-                    teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(rt => rt.ToPlayerInTeamDTO())
-                                       .OrderByDescending(a => a.Score).ToList()))
-                                       .ToArray();
-                }
+                teams = randomTeams.Select(rt => new TeamDTO(rt.Sum(p => p.Score), rt.Select(p => p.ToPlayerInTeamDTO()).OrderByDescending(a => a.Score).ToList()))
+                                   .ToArray();
 
                 countBet = 0;
             }
+
 
             if (bet == acceptableDifference || bet == 0.00M || countBet == 15)
             {
@@ -197,8 +148,28 @@ public class Dealer : IDealer
         }
 
         return OrderTeams(numberOfTeams, teams);
+    }
 
+    private static IEnumerable<PlayerDTO> GetPlayersWithAvoid(IEnumerable<PlayerDTO> players, List<PlayerDTO> updatedPlayersDTO, bool config, int numberOfLast, string tag)
+    {
+        if (config)
+        {
+            for (int i = 0; i < numberOfLast; i++)
+            {
+                var player = updatedPlayersDTO[i];
 
+                player = player with { AvoidSameTeam = string.IsNullOrEmpty(player.AvoidSameTeam) ? tag : player.AvoidSameTeam + $".{tag}" };
+                updatedPlayersDTO[i] = player;
+            }
+
+            var existingIds = new HashSet<string>(updatedPlayersDTO.Select(p => p.Id));
+            var newPlayers = players.Where(player => !existingIds.Contains(player.Id)).ToList();
+            updatedPlayersDTO.AddRange(newPlayers);
+
+            players = updatedPlayersDTO;
+        }
+
+        return players;
     }
 
     private static TeamDTO[] OrderTeams(int numberOfTeams, TeamDTO[] teams)
@@ -244,4 +215,5 @@ public class Dealer : IDealer
                                           oneTeamHasMoreThanHalfPosition :
                                           randomTeams[finalTeam].Count(p => p.Position == (int)position) > accptableNumber;
     }
+
 }
