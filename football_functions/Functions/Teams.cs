@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using football_functions.DTOs.Request;
+using football_functions.DTOs.Response;
 using football_functions.Extensions;
 using football_functions.Models;
 using football_functions.Services.Interfaces;
@@ -32,73 +34,51 @@ public class Teams
         ILogger log)
     {
         var playersEntity = await _playerTableStorage.GetAll();
-        var playersDTO = playersEntity.Select(p => p.ToPlayerDTO()).OrderByDescending(p => p.Score).ToList();
+        var playersDTO = playersEntity.Select(p => p.ToPlayerDTO())
+                                      .OrderByDescending(p => p.Score)
+                                      .ToList();
 
-        var getTeams = JsonSerializer.Deserialize<GetTeams>(req.Body);
-
-        var ids = getTeams.Ids;
-
-        playersDTO = playersDTO.Where(p => ids.Contains(p.Id)).ToList();
-
-        var numberOfTeams = 3;
-        var numberOfPlayers = 5;
-
-        if (ids.Count == 20 && !playersDTO.Any(p => p.Position == 1))
-        {
-            numberOfTeams = 2;
-
-            numberOfPlayers = ids.Count % 2 == 0 ? ids.Count / 2 : ids.Count / 2 + 1;
-        }
-        else if (ids.Count > 21)
-        {
-            numberOfTeams = 2;
-
-            numberOfPlayers = ids.Count % 2 == 0 ? ids.Count / 2 : ids.Count / 2 + 1;
-        }
-        else if (ids.Count > 15)
-        {
-            numberOfTeams = 3;
-
-            numberOfPlayers = ids.Count % 3 == 0 ? ids.Count / 3 : ids.Count / 3 + 1;
-        }
-        else if (ids.Count == 11)
-        {
-            numberOfTeams = 2;
-
-            numberOfPlayers = 6;
-        }
-        else if (ids.Count == 12 && playersDTO.Exists(p => p.Position == 1))
-        {
-            numberOfTeams = 2;
-
-            numberOfPlayers = 6;
-        }
-        else if (ids.Count == 12)
-        {
-            numberOfTeams = 3;
-
-            numberOfPlayers = 4;
-        }
-        else if (ids.Count == 14)
-        {
-            numberOfTeams = 3;
-
-            numberOfPlayers = 5;
-        }
-        else if (ids.Count <= 10)
-        {
-            numberOfTeams = 2;
-
-            numberOfPlayers = 5;
-        }
+        var getTeams = await JsonSerializer.DeserializeAsync<GetTeams>(req.Body);
+        var selectedPlayerIds = getTeams.Ids;
+        playersDTO = playersDTO.Where(p => selectedPlayerIds.Contains(p.Id)).ToList();
 
         var configTableStorageEntity = await _configTableStorage.GetFirst();
-
         var configs = JsonSerializer.Deserialize<Configs>(configTableStorageEntity.Configs);
 
+        var (numberOfTeams, numberOfPlayers) = GetTeamsAndPlayersCount(selectedPlayerIds.Count, playersDTO, configs);
 
         var teams = _dealer.SortTeamsRandom(playersDTO, numberOfTeams, numberOfPlayers, getTeams.UsePosition, configs);
-        return new OkObjectResult(teams);
 
+        return new OkObjectResult(teams);
+    }
+
+    private (int numberOfTeams, int numberOfPlayers) GetTeamsAndPlayersCount(int playerCount, List<PlayerDTO> playersDTO, Configs configs)
+    {
+        if (configs.NumberOfTeams > 0 && configs.NumberOfPlayers > 0)
+        {
+            return (configs.NumberOfTeams, configs.NumberOfPlayers);
+        }
+
+        return DetermineTeamsAndPlayersCount(playerCount, playersDTO);
+    }
+
+    private (int numberOfTeams, int numberOfPlayers) DetermineTeamsAndPlayersCount(int playerCount, List<PlayerDTO> playersDTO)
+    {
+        return playerCount switch
+        {
+            11 => (2, 6),
+            12 when playersDTO.Exists(p => p.Position == 1) => (2, 6),
+            12 => (3, 4),
+            14 => (3, 5),
+            15 => (3, 5),
+            20 when !playersDTO.Any(p => p.Position == 1) => (2, CalculatePlayersPerTeam(playerCount, 2)),
+            > 21 => (2, CalculatePlayersPerTeam(playerCount, 2)),
+            _ => (2, 5)
+        };
+    }
+
+    private int CalculatePlayersPerTeam(int playerCount, int teamCount)
+    {
+        return playerCount % teamCount == 0 ? playerCount / teamCount : playerCount / teamCount + 1;
     }
 }
