@@ -40,7 +40,8 @@ public class AddPlayer
             Regex.Replace(player.Name.ToUpperInvariant(), @"[^0-9a-zA-Z\._]", string.Empty),
             "",
             player.TshirtPBN,
-            player.TshirtGreen
+            player.TshirtGreen,
+            player.TshirtBlack
             );
 
         var playersEntity = await _playerTableStorage.InsertOrReplace(entity);

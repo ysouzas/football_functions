@@ -174,31 +174,28 @@ public class Dealer : IDealer
 
     private static TeamDTO[] OrderTeams(int numberOfTeams, TeamDTO[] teams)
     {
-        var orderedTeams = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN == true)).ToList();
+        var orderedByGreen = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtGreen)).ToList();
 
-        var teamsByTshirt = new List<TeamDTO>();
+        var teamWithMostGreen = orderedByGreen.First();
+        orderedByGreen.RemoveAt(0);
+
+        var orderedByPBN = orderedByGreen.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN)).ToList();
+
+        var teamWithMostPBN = orderedByPBN.First();
+        orderedByPBN.RemoveAt(0);
+
+        var teamWithMostBlack = orderedByPBN.First();
+
+        var teamsByTshirt = new List<TeamDTO> { teamWithMostGreen, teamWithMostPBN, teamWithMostBlack };
 
         if (numberOfTeams == 2)
         {
-            teamsByTshirt.Add(orderedTeams[1]);
-            teamsByTshirt.Add(orderedTeams[0]);
-        }
-        else
-        {
-            var TshirPBN = orderedTeams[0];
-            orderedTeams.RemoveAt(0);
-            orderedTeams = orderedTeams.OrderByDescending(t => t.Players.Count(p => p.TshirtGreen == true)).ToList();
-            var TshirGreen = orderedTeams.First();
-            orderedTeams.RemoveAt(0);
-
-            teamsByTshirt.Add(TshirGreen);
-            teamsByTshirt.Add(TshirPBN);
-            teamsByTshirt.Add(orderedTeams[0]);
-
+            teamsByTshirt.RemoveAt(2);
         }
 
         return teamsByTshirt.ToArray();
     }
+
 
     private bool HasMoreThanHalfPlayersOfPosition(PlayerDTO[][] randomTeams, IEnumerable<PlayerDTO> players, int position, int inicialTeam, int finalTeam)
     {
