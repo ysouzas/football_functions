@@ -174,28 +174,36 @@ public class Dealer : IDealer
 
     private static TeamDTO[] OrderTeams(int numberOfTeams, TeamDTO[] teams)
     {
-        var orderedByGreen = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtGreen)).ToList();
-
-        var teamWithMostGreen = orderedByGreen.First();
-        orderedByGreen.RemoveAt(0);
-
-        var orderedByPBN = orderedByGreen.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN)).ToList();
-
-        var teamWithMostPBN = orderedByPBN.First();
-        orderedByPBN.RemoveAt(0);
-
-        var teamWithMostBlack = orderedByPBN.First();
-
-        var teamsByTshirt = new List<TeamDTO> { teamWithMostGreen, teamWithMostPBN, teamWithMostBlack };
+        var teamsByTshirt = new List<TeamDTO>();
 
         if (numberOfTeams == 2)
         {
-            teamsByTshirt.RemoveAt(2);
+            var orderedByPBN = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN)).ToList();
+
+            teamsByTshirt.Add(orderedByPBN[0]);
+            teamsByTshirt.Add(orderedByPBN[1]);
+        }
+        else
+        {
+            var orderedByGreen = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtGreen)).ToList();
+
+            var teamWithMostGreen = orderedByGreen.First();
+            orderedByGreen.RemoveAt(0);
+
+            var orderedByPBN = orderedByGreen.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN)).ToList();
+
+            var teamWithMostPBN = orderedByPBN.First();
+            orderedByPBN.RemoveAt(0);
+
+            var teamWithMostBlack = orderedByPBN.First();
+
+            teamsByTshirt.Add(teamWithMostGreen);
+            teamsByTshirt.Add(teamWithMostPBN);
+            teamsByTshirt.Add(teamWithMostBlack);
         }
 
         return teamsByTshirt.ToArray();
     }
-
 
     private bool HasMoreThanHalfPlayersOfPosition(PlayerDTO[][] randomTeams, IEnumerable<PlayerDTO> players, int position, int inicialTeam, int finalTeam)
     {
