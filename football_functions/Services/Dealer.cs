@@ -185,25 +185,27 @@ public class Dealer : IDealer
         }
         else
         {
-            var orderedByGreen = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtGreen)).ToList();
+            var orderedByBlack = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtBlack)).ToList();
 
-            var teamWithMostGreen = orderedByGreen.First();
-            orderedByGreen.RemoveAt(0);
+            var teamWithMostBlack = orderedByBlack.First();
+            orderedByBlack.RemoveAt(0);
 
-            var orderedByPBN = orderedByGreen.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN)).ToList();
+            var orderedByPBN = orderedByBlack.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN)).ToList();
 
             var teamWithMostPBN = orderedByPBN.First();
             orderedByPBN.RemoveAt(0);
 
-            var teamWithMostBlack = orderedByPBN.First();
+            var teamWithMostGreen = orderedByPBN.First();
 
             teamsByTshirt.Add(teamWithMostGreen);
             teamsByTshirt.Add(teamWithMostPBN);
             teamsByTshirt.Add(teamWithMostBlack);
+
         }
 
         return teamsByTshirt.ToArray();
     }
+
 
     private bool HasMoreThanHalfPlayersOfPosition(PlayerDTO[][] randomTeams, IEnumerable<PlayerDTO> players, int position, int inicialTeam, int finalTeam)
     {
