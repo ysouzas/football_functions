@@ -178,19 +178,19 @@ public class Dealer : IDealer
 
         if (numberOfTeams == 2)
         {
-            var orderedByPBN = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN)).ToList();
+            var orderedByPBN = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN && p.Position != 1)).ToList();
 
             teamsByTshirt.Add(orderedByPBN[0]);
             teamsByTshirt.Add(orderedByPBN[1]);
         }
         else
         {
-            var orderedByBlack = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtBlack)).ToList();
+            var orderedByBlack = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtBlack && p.Position != 1)).ToList();
 
             var teamWithMostBlack = orderedByBlack.First();
             orderedByBlack.RemoveAt(0);
 
-            var orderedByPBN = orderedByBlack.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN)).ToList();
+            var orderedByPBN = orderedByBlack.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN && p.Position != 1)).ToList();
 
             var teamWithMostPBN = orderedByPBN.First();
             orderedByPBN.RemoveAt(0);
