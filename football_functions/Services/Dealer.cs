@@ -180,8 +180,8 @@ public class Dealer : IDealer
         {
             var orderedByPBN = teams.OrderByDescending(t => t.Players.Count(p => p.TshirtPBN && p.Position != 1)).ToList();
 
-            teamsByTshirt.Add(orderedByPBN[0]);
             teamsByTshirt.Add(orderedByPBN[1]);
+            teamsByTshirt.Add(orderedByPBN[0]);
         }
         else
         {
